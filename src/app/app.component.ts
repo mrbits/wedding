@@ -5,12 +5,14 @@ import { FacebookService, InitParams, LoginResponse, UIParams, LoginOptions } fr
 import { Router } from '@angular/router';
 import { ActivatedRoute, Params } from '@angular/router';
 
-import {GuestComponent} from './guest/guest.component';
-import {GuestDetailComponent} from './guest-detail/guest-detail.component';
-import {LoginDialogComponent} from './login-dialog/login-dialog.component';
+import {Guest} from './guest';
+import {DialogComponent} from './dialog/dialog.component';
+// import {GuestComponent} from './guest/guest.component';
+// import {GuestDetailComponent} from './guest-detail/guest-detail.component';
+// import {LoginDialogComponent} from './login-dialog/login-dialog.component';
 
-import {AuthService} from './auth.service';
-import {GuestService} from './guest.service';
+import {AuthService} from './services/auth.service';
+import {GuestService} from './services/guest.service';
 
 @Component({
   selector: 'body',
@@ -20,43 +22,45 @@ import {GuestService} from './guest.service';
 export class AppComponent implements OnInit{
   //title = 'Amanda & Luke are getting married!';
   fbLoginResponse: LoginResponse;
-  guest: GuestComponent;
-  party: GuestComponent[] = [];
+  // guest: GuestComponent;
+  guest: Guest;
+  party: Guest[];
+  // party: GuestComponent[] = [];
   isAuthorized: Boolean = false;
   showGuest: Boolean = true;
-  dialogRef: MdDialogRef<LoginDialogComponent>;
+  dialogRef: MdDialogRef<DialogComponent>;
   config: MdSnackBarConfig;
   actionButtonLabel: string = '';
 
-  title = 'Amanda & Luke\'s Wedding!';
+  title = 'Amanda & Luke\'s Wedding';
   pages = [
     {
       name: 'Wedding',
-      icon: 'svg-1',
+      icon: 'wedding',
       routerLink: '/wedding',
       routerLinkActive: true,
-      active: true,
+      // active: true,
     },
     {
-      name: 'Details',
-      icon: 'svg-2',
-      routerLink: '/details',
-      routerLinkActive: true,
-      active: this.isAuthorized,
+      name: 'Invitation',
+      icon: 'invite-details',
+      routerLink: '/invite',
+      routerLinkActive: this.isAuthorized,
+      // active: this.isAuthorized,
     },
     {
       name: 'Registry',
-      icon: 'svg-3',
+      icon: 'registry',
       routerLink: '/registry',
-      routerLinkActive: true,
-      active: this.isAuthorized,
+      routerLinkActive: this.isAuthorized,
+      // active: this.isAuthorized,
     },
     {
       name: 'RSVP',
-      icon: 'svg-5',
+      icon: 'rsvp',
       routerLink: '/rsvp',
-      routerLinkActive: true,
-      active: this.isAuthorized,
+      routerLinkActive: this.isAuthorized,
+      // active: this.isAuthorized,
     },
   ];
   
@@ -64,7 +68,11 @@ export class AppComponent implements OnInit{
   constructor(private iconRegistry: MdIconRegistry, private sanitizer: DomSanitizer, 
   private dialog: MdDialog, private authService:AuthService, public snackbar: MdSnackBar,
   private guestService: GuestService, private router: Router,  private route: ActivatedRoute) {
-    this.guest = new GuestComponent();
+    // this.guest = new GuestComponent();
+    // To avoid XSS attacks, the URL needs to be trusted from inside of your application.
+    const iconsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('../assets/images/icons.svg');
+    console.log(iconsSafeUrl)
+    this.iconRegistry.addSvgIconSetInNamespace('icons', iconsSafeUrl);
   }
 
   ngOnInit(){
@@ -74,12 +82,12 @@ export class AppComponent implements OnInit{
     
     this.getLoginStatus();
 
-    // To avoid XSS attacks, the URL needs to be trusted from inside of your application.
-    const iconsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('./assets/icons.svg');
-    this.iconRegistry.addSvgIconSetInNamespace('icons', iconsSafeUrl);
-
   }
-
+  getGuestDetails (id: String){
+    console.log('get guest details')
+    console.log(id)
+    this.router.navigate(['/guest', id]);
+  }
   // loginWithFacebook(): void {
   //   this.authService.loginWithFacebook()
   //   .then(res => {
@@ -98,101 +106,118 @@ export class AppComponent implements OnInit{
   // }
 
   getLoginStatus():  void {
-    console.log('get login status..');
-
-    //if localStorage token exists, check if still valid
-    if(this.authService.loggedIn('id_token')){
-      console.log('is authorized..');
-      this.isAuthorized = true;
-      this.authService.getParty()
+    console.log('get login status..')
+    this.guestService.getPartyFromValue('lucasjschmidt@gmail.com')
       .subscribe(res => {
-        console.log(res);
-        let id: number = 0;
-        res.party.forEach(guest => {
-          id++;
-          guest.id = id;
-        });
-        this.party = res.party;
-        this.guestService.setParty(this.party);
-      });
+        this.guestService.setParty(res.guests)
+        this.guestService.getParty()
+          .subscribe(party => {
+            console.log(party)
+            this.party = party
+            console.log(this.party)
+            this.snackbar.open(res.msg, res.title, this.config)
+          })
+      })
+    // this.guestService.getParty().subscribe(res => {
+    //   console.log(res)
+    //   this.party = res.guests
+    //   this.snackbar.open(res.msg, res.title, this.config)
+    // //             this.openDialog();
+    // })
+    
+    //if localStorage token exists, check if still valid
+    // if(this.authService.loggedIn('id_token')){
+    //   console.log('is authorized..');
+    //   this.isAuthorized = true;
+    //   this.authService.getParty()
+    //   .subscribe(res => {
+    //     console.log(res);
+    //     let id: number = 0;
+    //     res.party.forEach(guest => {
+    //       id++;
+    //       guest.id = id;
+    //     });
+    //     this.party = res.party;
+    //     this.guestService.setParty(this.party);
+    //   });
       
-    }
+    // }
     
 
     //if unauthorized
-    if(!this.isAuthorized){
-      //get facebook login status
-      this.authService.getLoginStatus()
-      .then(res => {
-        console.log('login status..');
-        console.log(res);
-        //if not authorized via facebook then open login dialog
-        if(res==='not_authorized'){
-          this.openDialog();
-        } else {
-          //get facebook profile info (name & email), find user, and set localstorage
-          this.authService.getFBProfile()
-          .then(res => {
-            console.log('get fb profile..');
-            console.log(res);
+    // if(!this.isAuthorized){
+    //   //get facebook login status
+    //   this.authService.getLoginStatus()
+    //   .then(res => {
+    //     console.log('login status..');
+    //     console.log(res);
+    //     //if not authorized via facebook then open login dialog
+    //     if(res==='not_authorized'){
+    //       this.openDialog();
+    //     } else {
+    //       //get facebook profile info (name & email), find user, and set localstorage
+    //       this.authService.getFBProfile()
+    //       .then(res => {
+    //         console.log('get fb profile..');
+    //         console.log(res);
 
-            this.guest.email = res.email;
-            this.guest.unicorn = res.id;
+    //         this.guest.email = res.email;
+    //         this.guest.unicorn = res.id;
 
-            this.authService.loginCustom(this.guest)
-            .subscribe(res => {
-              console.log(res);
+    //         this.authService.loginCustom(this.guest)
+    //         .subscribe(res => {
+    //           console.log(res);
               
-              if(res.success){
-                this.authService.storeToken(res.token, res.guest);
-                this.party = res.party;
-                this.isAuthorized = true;
-                this.actionButtonLabel = 'Success';
-                this.snackbar.open('You are signed in', this.actionButtonLabel, this.config);
-              } else {
-                this.actionButtonLabel = 'Oops';
-                this.snackbar.open(res.msg, this.actionButtonLabel, this.config);
-                this.openDialog();
-              }
-            })
-          });
-        }
-      });
-    }
+    //           if(res.success){
+    //             this.authService.storeToken(res.token, res.guest);
+    //             this.party = res.party;
+    //             this.isAuthorized = true;
+    //             this.actionButtonLabel = 'Success';
+    //             this.snackbar.open('You are signed in', this.actionButtonLabel, this.config);
+    //           } else {
+    //             this.actionButtonLabel = 'Oops';
+    //             this.snackbar.open(res.msg, this.actionButtonLabel, this.config);
+    //             this.openDialog();
+    //           }
+    //         })
+    //       });
+    //     }
+    //   });
+    // }
   }
 
   openDialog() {
     console.log(this.party);
     let config: MdDialogConfig = { data: this.party};
-    this.dialogRef = this.dialog.open(LoginDialogComponent, config);
+    // this.dialogRef = this.dialog.open(LoginDialogComponent, config);
 
-    this.dialogRef.afterClosed().subscribe((party: GuestComponent[]) => {
-      console.log('after closed..');
-      console.log(party);
-      console.log(this.party);
-      let id: number = 0;
-      if(party.length){
-        party.forEach(guest => {
-          id++;
-          guest.id = id;
-          console.log(guest);
-        });
-        this.party = party;
-        this.guestService.setParty(this.party);
-        console.log(this.party);
-        this.dialogRef = null;
-        if(localStorage.getItem('id_token') !== null){
-          this.isAuthorized = this.authService.loggedIn('id_token');
-        }
-      }
-      if(!this.isAuthorized){
-        this.actionButtonLabel = 'Oops';
-        this.snackbar.open('Please login to view details and RSVP', this.actionButtonLabel, this.config);
-      } else {
-        this.actionButtonLabel = 'Yeah';
-        this.snackbar.open('Welcome to the fun zone!', this.actionButtonLabel, this.config);
-      }
-    });
+    // this.dialogRef.afterClosed().subscribe((party: GuestComponent[]) => {
+    //   console.log('after closed..');
+    //   console.log(party);
+    //   console.log(this.party);
+    //   let id: number = 0;
+    //   if(party.length){
+    //     party.forEach(guest => {
+    //       id++;
+    //       guest.id = id;
+    //       console.log(guest);
+    //     });
+    //     this.party = party;
+    //     this.guestService.setParty(this.party);
+    //     console.log(this.party);
+    //     this.dialogRef = null;
+    //     if(localStorage.getItem('id_token') !== null){
+    //       this.isAuthorized = this.authService.loggedIn('id_token');
+    //     }
+    //   }
+    //   if(!this.isAuthorized){
+    //     this.actionButtonLabel = 'Oops';
+    //     this.snackbar.open('Please login to view details and RSVP', this.actionButtonLabel, this.config);
+    //   } else {
+    //     this.actionButtonLabel = 'Yeah';
+    //     this.snackbar.open('Welcome to the fun zone!', this.actionButtonLabel, this.config);
+    //   }
+    // });
   }
 
   logout(){

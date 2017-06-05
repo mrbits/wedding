@@ -41,7 +41,7 @@ app.use(passport.session());
 
 require('./config/passport')(passport);
 
-app.use('/guest', guests);
+app.use('/api/guest', guests);
 
 // Index Route
 app.get('/', (req, res) => {

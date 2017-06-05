@@ -95,7 +95,7 @@
     background-size: cover;
 }
 .header-img {
-    background-image: url('./luke-amanda.png');
+    background-image: url('../images/luke-amanda.png');
     background-size: cover;
     background-position:35% 0%;
 }
@@ -117,4 +117,7 @@
 }
 .mat-dialog-content {
     padding: 0 0 15px 0 !important;
+}
+.mat-sidenav {
+    background-color: #b4eeaa !important;
 }

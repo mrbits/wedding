@@ -1,3 +1,47 @@
-<h1>
-  {{title}}
-</h1>
+<div fxLayout="column" fxFlex>
+
+  <md-toolbar color="primary">
+    <span>{{title}}</span>
+
+    <!-- Filler that pushes the menu button to the end of the toolbar -->
+    <span fxFlex></span>
+
+    <!--<button md-icon-button [mdMenuTriggerFor]="themeMenu">
+      <md-icon>more_vert</md-icon>
+    </button>-->
+
+  </md-toolbar>
+
+  <md-sidenav-container fxFlex>
+    <md-sidenav mode="side" opened class="mat-sidenav">
+
+      <md-tab-group>
+        <md-tab label="Wedding">
+          <md-nav-list>
+            <!--<md-list-item *ngFor="let page of pages">-->
+            <md-list-item *ngFor="let page of pages" routerLink="{{page.routerLink}}" routerLinkActive="{{page.routerLinkActive}}">
+              <md-icon svgIcon="icons:{{page.icon}}" class="avatar"></md-icon>
+              <span>{{page.name}}</span>
+            </md-list-item>
+          </md-nav-list>
+        </md-tab>
+        <md-tab label="My Party">
+          <md-nav-list>
+            <md-list-item *ngFor="let guest of party" (click)="getGuestDetails(guest._id)">
+              <md-icon svgIcon="icons:party" class="avatar"></md-icon>
+              <span>{{guest.firstName}} {{guest.lastName}}</span>
+            </md-list-item>
+            <md-list-item [hidden]="this.isAuthorized">
+              <md-icon svgIcon="icons:login" class="avatar"></md-icon>
+              <span>Login</span>
+            </md-list-item>
+            <md-list-item [hidden]="!this.isAuthorized">
+              <md-icon svgIcon="icons:login" class="avatar"></md-icon>
+              <span>Logout</span>
+            </md-list-item>
+          </md-nav-list>
+        </md-tab>
+      </md-tab-group>
+    </md-sidenav>
+    <router-outlet></router-outlet>
+  </md-sidenav-container>
