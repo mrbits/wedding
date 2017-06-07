@@ -99,6 +99,20 @@
     background-size: cover;
     background-position:35% 0%;
 }
+.rsvpYes {
+    background-image: url('../images/yesrsvp.png');
+    background-size: cover;
+}
+.rsvpNo {
+    background-image: url('../images/norsvp.png');
+    background-size: cover;
+}
+.rsvpYes, .rsvpNo  {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: inherit !important;
+    margin-left: 10px;
+}
 .right {
     position: absolute !important;
     right: 5px !important;
@@ -120,4 +134,56 @@
 }
 .mat-sidenav {
     background-color: #b4eeaa !important;
+}
+.mat-img {
+    float: left !important;
+}
+.mat-grid-tile .mat-figure {
+    justify-content: flex-start !important;
+}
+.mat-icon {
+    width: 40px !important;
+    height: 40px !important;
+    margin-right: 10px
+}
+.mat-input-container {
+    width: 100% !important;
+}
+.mat-radio-button {
+    display: block !important;
+}
+.mat-child-card {
+    background-color: #f8f8f8 !important;
+    margin-bottom: 10px;
+}
+.first {
+    padding-top: 18px !important;
+}
+.mat-tab-label {
+    min-width: 150px !important;
+}
+md-sidenav {
+    width: 300px !important;
+}
+.mat-list-item span{
+    /*font-family: 'Amatic SC', cursive !important;
+    font-weight: bold !important;
+    font-size: 2em !important;*/
+    color: #888 !important;
+}
+md-icon.avatar{
+    margin:12px 12px 12px 24px !important;
+}
+md-icon.avatar-menu{
+    margin: 0 12px !important;
+    width: 32px;
+    height: 32px;
+}
+.mat-nav-list .mat-list-item:hover, .mat-nav-list .mat-list-item.mat-list-item-focus, 
+.mat-nav-list .mat-list-item.mat-list-item.active {
+    /*background: rgba(0, 0, 0, 0.1) !important;*/
+    /*background: rgba(197, 225, 165, 0.7) !important;*/
+    /*background: #C5E1A5 !important;*/
+    background: rgba(245,245,245,0.3) !important;
+    /*box-shadow: 0px 0px 1px 1px #424242;*/
 }

@@ -1,19 +1,19 @@
 <div fxLayout="column" fxFlex>
 
   <md-toolbar color="primary">
-    <span>{{title}}</span>
+    <h1>{{title}}</h1>
 
     <!-- Filler that pushes the menu button to the end of the toolbar -->
     <span fxFlex></span>
 
-    <!--<button md-icon-button [mdMenuTriggerFor]="themeMenu">
+    <button md-icon-button [hidden]="sideNavOpened" [mdMenuTriggerFor]="collapsedMenu">
       <md-icon>more_vert</md-icon>
-    </button>-->
+    </button>
 
   </md-toolbar>
 
   <md-sidenav-container fxFlex>
-    <md-sidenav mode="side" opened class="mat-sidenav">
+    <md-sidenav [mode]="sideNavMode" [opened]="sideNavOpened" class="mat-sidenav">
 
       <md-tab-group>
         <md-tab label="Wedding">
@@ -27,9 +27,9 @@
         </md-tab>
         <md-tab label="My Party">
           <md-nav-list>
-            <md-list-item *ngFor="let guest of party" (click)="getGuestDetails(guest._id)">
+            <md-list-item *ngFor="let g of party" (click)="getGuestDetails(g)" [ngClass]="{active: g===this.guest}">
               <md-icon svgIcon="icons:party" class="avatar"></md-icon>
-              <span>{{guest.firstName}} {{guest.lastName}}</span>
+              <span>{{g.firstName}} {{g.lastName}}</span>
             </md-list-item>
             <md-list-item [hidden]="this.isAuthorized">
               <md-icon svgIcon="icons:login" class="avatar"></md-icon>
@@ -45,3 +45,9 @@
     </md-sidenav>
     <router-outlet></router-outlet>
   </md-sidenav-container>
+  <md-menu #collapsedMenu x-position="before">
+      <button md-menu-item *ngFor="let page of pages" routerLink="{{page.routerLink}}" routerLinkActive="{{page.routerLinkActive}}">
+        <md-icon svgIcon="icons:{{page.icon}}" class="avatar-menu"></md-icon>
+        {{page.name}}
+      </button>
+  </md-menu>

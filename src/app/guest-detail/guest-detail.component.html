@@ -1,1 +1,18 @@
-{{guest.firstName}} {{guest.lastName}}
+<div class="content" flex fxLayout="row" fxLayoutGap="16px">
+  <md-card flex fxFlex="90" class="mat-center-card">
+    <md-card-header>
+      <div md-card-avatar class="header-img"></div>
+      <md-card-title>{{guest.firstName}} {{guest.lastName}}</md-card-title>
+      <md-card-subtitle>Guest Summary</md-card-subtitle>
+    </md-card-header>
+    <md-card-content>
+      <button md-button color="accent">{{inviteText}} <span [hidden]="inviteDate===''">({{inviteDate}})</span></button>
+      <button md-button color="accent" (click)="getRsvp()">{{rsvpText}} <span [hidden]="rsvpDate===''">({{rsvpDate}})</span></button>
+      <button md-button color="accent" (click)="getRsvp()">{{guest.mealOption==='' ? 'Pick Your Dish!' : guest.mealOption}} <span [hidden]="mealOptionDate===''">({{mealOptionDate}})</span></button>
+      <button md-button color="accent" (click)="getRsvp()">{{guest.requestedSong}}</button>
+      <button md-button color="accent" (click)="getProfileDialog()">{{guest.email}}</button>
+      <button md-button color="accent" (click)="getProfileDialog()">{{guest.address==='' ? 'For Invites, etc.' : guest.address}}</button>
+      <button md-button color="accent" (click)="getProfileDialog()">{{guest.phone==='' ? 'Keep in Touch' : guest.phone}}</button>
+    </md-card-content>
+  </md-card>
+</div>

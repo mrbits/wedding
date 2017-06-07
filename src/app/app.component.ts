@@ -1,9 +1,11 @@
-import { Component,OnInit } from '@angular/core';
+import { Component,OnInit,OnDestroy } from '@angular/core';
 import {MdIconRegistry,MdDialogRef, MdDialog, MdDialogConfig, MD_DIALOG_DATA, MdSnackBar, MdSnackBarConfig} from '@angular/material';
 import {DomSanitizer} from '@angular/platform-browser';
 import { FacebookService, InitParams, LoginResponse, UIParams, LoginOptions } from 'ngx-facebook';
 import { Router } from '@angular/router';
 import { ActivatedRoute, Params } from '@angular/router';
+import {Subscription} from "rxjs/Subscription";
+import {MediaChange, ObservableMedia} from "@angular/flex-layout";
 
 import {Guest} from './guest';
 import {DialogComponent} from './dialog/dialog.component';
@@ -19,7 +21,7 @@ import {GuestService} from './services/guest.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit, OnDestroy{
   //title = 'Amanda & Luke are getting married!';
   fbLoginResponse: LoginResponse;
   // guest: GuestComponent;
@@ -42,7 +44,7 @@ export class AppComponent implements OnInit{
       // active: true,
     },
     {
-      name: 'Invitation',
+      name: 'Invite',
       icon: 'invite-details',
       routerLink: '/invite',
       routerLinkActive: this.isAuthorized,
@@ -63,16 +65,30 @@ export class AppComponent implements OnInit{
       // active: this.isAuthorized,
     },
   ];
+
+  watcher: Subscription;
+  activeMediaQuery = '';
+  sideNavOpened: boolean = true;
+  sideNavMode: string = 'side';
   
 
   constructor(private iconRegistry: MdIconRegistry, private sanitizer: DomSanitizer, 
   private dialog: MdDialog, private authService:AuthService, public snackbar: MdSnackBar,
-  private guestService: GuestService, private router: Router,  private route: ActivatedRoute) {
+  private guestService: GuestService, private router: Router,  
+  private route: ActivatedRoute, media: ObservableMedia) {
     // this.guest = new GuestComponent();
     // To avoid XSS attacks, the URL needs to be trusted from inside of your application.
     const iconsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('../assets/images/icons.svg');
     console.log(iconsSafeUrl)
     this.iconRegistry.addSvgIconSetInNamespace('icons', iconsSafeUrl);
+    this.watcher = media.subscribe((change: MediaChange) => {
+      this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : "";
+      if ( change.mqAlias === 'sm' || change.mqAlias === 'xs') {
+         this.loadMobileContent();
+      } else {
+         this.loadDesktopContent();
+      }
+    });
   }
 
   ngOnInit(){
@@ -83,10 +99,11 @@ export class AppComponent implements OnInit{
     this.getLoginStatus();
 
   }
-  getGuestDetails (id: String){
+  getGuestDetails (guest: Guest){
     console.log('get guest details')
-    console.log(id)
-    this.router.navigate(['/guest', id]);
+    console.log(guest._id)
+    this.guest = guest
+    this.router.navigate(['/guest', guest._id])
   }
   // loginWithFacebook(): void {
   //   this.authService.loginWithFacebook()
@@ -234,5 +251,22 @@ export class AppComponent implements OnInit{
   }
   hideGuestDetails(){
     this.showGuest = false;
+  }
+
+  ngOnDestroy() {
+    this.watcher.unsubscribe();
+  }
+
+  loadMobileContent() { 
+    // Do something special since the viewport is currently
+    // using mobile display sizes
+    this.sideNavMode = 'over';
+    this.sideNavOpened = false;
+  }
+  loadDesktopContent() { 
+    // Do something special since the viewport is currently
+    // using mobile display sizes
+    this.sideNavMode = 'side';
+    this.sideNavOpened = true;
   }
 }
