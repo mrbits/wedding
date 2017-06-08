@@ -6,7 +6,7 @@ import { HttpModule } from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {AppRoutingModule} from './app-routing/app-routing.module';
+import {AppRoutingModule } from './app-routing/app-routing.module';
 
 import { AppComponent } from './app.component';
 import { WeddingComponent } from './wedding/wedding.component';
@@ -18,9 +18,8 @@ import { DialogComponent } from './dialog/dialog.component';
 import { InviteComponent } from './invite/invite.component';
 import { RegistryComponent } from './registry/registry.component';
 import { RsvpComponent } from './rsvp/rsvp.component';
-
-import 'hammerjs';
 import { GuestDetailComponent } from './guest-detail/guest-detail.component';
+import 'hammerjs';
 
 @NgModule({
   declarations: [
@@ -30,7 +29,7 @@ import { GuestDetailComponent } from './guest-detail/guest-detail.component';
     InviteComponent,
     RegistryComponent,
     RsvpComponent,
-    GuestDetailComponent,
+    GuestDetailComponent
     // routedComponents
   ],
   imports: [

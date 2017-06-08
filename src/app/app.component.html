@@ -46,8 +46,14 @@
     <router-outlet></router-outlet>
   </md-sidenav-container>
   <md-menu #collapsedMenu x-position="before">
+    <span md-menu-item>Wedding</span>
       <button md-menu-item *ngFor="let page of pages" routerLink="{{page.routerLink}}" routerLinkActive="{{page.routerLinkActive}}">
         <md-icon svgIcon="icons:{{page.icon}}" class="avatar-menu"></md-icon>
         {{page.name}}
+      </button>
+      <span md-menu-item>Party</span>
+      <button md-menu-item *ngFor="let g of party" (click)="getGuestDetails(g)" [ngClass]="{active: g===this.guest}">
+        <md-icon svgIcon="icons:party" class="avatar-menu"></md-icon>
+        {{g.firstName}} {{g.lastName}}
       </button>
   </md-menu>

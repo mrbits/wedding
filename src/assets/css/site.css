@@ -99,6 +99,11 @@
     background-size: cover;
     background-position:35% 0%;
 }
+.party-header-img {
+    background-image: url('../images/party.svg');
+    background-size: cover;
+    background-position:35% 0%;
+}
 .rsvpYes {
     background-image: url('../images/yesrsvp.png');
     background-size: cover;
@@ -174,10 +179,13 @@ md-sidenav {
 md-icon.avatar{
     margin:12px 12px 12px 24px !important;
 }
+md-grid-tile md-icon.avatar {
+    margin: 0 12px !important;
+}
 md-icon.avatar-menu{
     margin: 0 12px !important;
-    width: 32px;
-    height: 32px;
+    width: 32px !important;
+    height: 32px !important;
 }
 .mat-nav-list .mat-list-item:hover, .mat-nav-list .mat-list-item.mat-list-item-focus, 
 .mat-nav-list .mat-list-item.mat-list-item.active {
@@ -186,4 +194,10 @@ md-icon.avatar-menu{
     /*background: #C5E1A5 !important;*/
     background: rgba(245,245,245,0.3) !important;
     /*box-shadow: 0px 0px 1px 1px #424242;*/
+}
+.mat-menu-item {
+    height: 40px !important;
+    line-height: 40px !important;
+    /*padding: 4px !important;*/
+    font-size: 12px !important;
 }

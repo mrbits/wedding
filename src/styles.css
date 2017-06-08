@@ -12,5 +12,6 @@ html, body {
 h1, h2, h3, h4, h5 {
   font-family: 'Amatic SC', cursive;
   font-size: 1.85em !important;
+  /*font-size: 1.85em !important;*/
   color: #b4eeaa;
 }

@@ -1,18 +1,69 @@
 <div class="content" flex fxLayout="row" fxLayoutGap="16px">
-  <md-card flex fxFlex="90" class="mat-center-card">
+  <md-card flex fxFlex="100" class="mat-center-card">
     <md-card-header>
-      <div md-card-avatar class="header-img"></div>
+      <div md-card-avatar class="party-header-img"></div>
       <md-card-title>{{guest.firstName}} {{guest.lastName}}</md-card-title>
       <md-card-subtitle>Guest Summary</md-card-subtitle>
     </md-card-header>
     <md-card-content>
+      <md-grid-list cols="1" rowHeight="50px" fxFlex="75">
+          <md-grid-tile colspan="1" rowspan="1" class="first">
+             <md-icon svgIcon="icons:invite-details" class="avatar"></md-icon><span md-line>&nbsp;Invite</span>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1">
+            <button md-button color="accent">{{inviteText}} <span [hidden]="inviteDate===''">({{inviteDate}})</span></button>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1" class="first">
+             <md-icon svgIcon="icons:rsvp" class="avatar"></md-icon><span md-line>&nbsp;RSVP</span>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1">
+            <button md-button color="accent" (click)="getRsvp()">{{rsvpText}} <span [hidden]="rsvpDate===''">({{rsvpDate}})</span></button>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1" class="first">
+             <md-icon svgIcon="icons:dinner" class="avatar"></md-icon><span md-line>&nbsp;Meal Option</span>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1">
+            <button md-button color="accent" (click)="getRsvp()">{{guest.mealOption==='' ? 'Pick Your Dish!' : guest.mealOption}} <span [hidden]="mealOptionDate===''">({{mealOptionDate}})</span></button>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1" class="first">
+             <md-icon svgIcon="icons:music" class="avatar"></md-icon><span md-line>&nbsp;Music</span>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1">
+            <button md-button color="accent" (click)="getRsvp()">{{guest.requestedSong}}</button>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1" class="first">
+             <md-icon svgIcon="icons:checklist" class="avatar"></md-icon><span md-line>&nbsp;Email</span>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1">
+            <button md-button color="accent" (click)="getProfileDialog()">{{guest.email}}</button>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1" class="first">
+             <md-icon svgIcon="icons:address" class="avatar"></md-icon><span md-line>&nbsp;Address</span>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1">
+            <button md-button color="accent" (click)="getProfileDialog()">{{guest.address==='' ? 'For Invites, etc.' : guest.address}}</button>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1" class="first">
+             <md-icon svgIcon="icons:phone" class="avatar"></md-icon><span md-line>&nbsp;Phone</span>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1">
+            <button md-button color="accent" (click)="getProfileDialog()">{{guest.phone==='' ? 'Keep in Touch' : guest.phone}}</button>
+          </md-grid-tile>
+      </md-grid-list>
+      <!--<md-icon svgIcon="icons:invite-details" class="avatar"></md-icon>
       <button md-button color="accent">{{inviteText}} <span [hidden]="inviteDate===''">({{inviteDate}})</span></button>
+      <md-icon svgIcon="icons:rsvp" class="avatar"></md-icon>
       <button md-button color="accent" (click)="getRsvp()">{{rsvpText}} <span [hidden]="rsvpDate===''">({{rsvpDate}})</span></button>
+      <md-icon svgIcon="icons:mealOption" class="avatar"></md-icon>
       <button md-button color="accent" (click)="getRsvp()">{{guest.mealOption==='' ? 'Pick Your Dish!' : guest.mealOption}} <span [hidden]="mealOptionDate===''">({{mealOptionDate}})</span></button>
+      <md-icon svgIcon="icons:music" class="avatar"></md-icon>
       <button md-button color="accent" (click)="getRsvp()">{{guest.requestedSong}}</button>
+      <md-icon svgIcon="icons:checklist" class="avatar"></md-icon>
       <button md-button color="accent" (click)="getProfileDialog()">{{guest.email}}</button>
+      <md-icon svgIcon="icons:address" class="avatar"></md-icon>
       <button md-button color="accent" (click)="getProfileDialog()">{{guest.address==='' ? 'For Invites, etc.' : guest.address}}</button>
-      <button md-button color="accent" (click)="getProfileDialog()">{{guest.phone==='' ? 'Keep in Touch' : guest.phone}}</button>
+      <md-icon svgIcon="icons:phone" class="avatar"></md-icon>
+      <button md-button color="accent" (click)="getProfileDialog()">{{guest.phone==='' ? 'Keep in Touch' : guest.phone}}</button>-->
     </md-card-content>
   </md-card>
 </div>
