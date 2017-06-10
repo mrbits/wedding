@@ -4,14 +4,18 @@ import {DomSanitizer} from '@angular/platform-browser';
 import { FacebookService, InitParams, LoginResponse, UIParams, LoginOptions } from 'ngx-facebook';
 import { Router } from '@angular/router';
 import { ActivatedRoute, Params } from '@angular/router';
+import 'rxjs/add/operator/takeUntil';
 import {Subscription} from "rxjs/Subscription";
+import { Subject } from 'rxjs/Subject';
 import {MediaChange, ObservableMedia} from "@angular/flex-layout";
 
 import {Guest} from './guest';
-import {DialogComponent} from './dialog/dialog.component';
+
 // import {GuestComponent} from './guest/guest.component';
 // import {GuestDetailComponent} from './guest-detail/guest-detail.component';
-// import {LoginDialogComponent} from './login-dialog/login-dialog.component';
+import {DialogComponent} from './dialog/dialog.component';
+import {ProfileDialogComponent} from './profile-dialog/profile-dialog.component';
+import {ForgotPasswordDialogComponent} from './forgot-password-dialog/forgot-password-dialog.component';
 
 import {AuthService} from './services/auth.service';
 import {GuestService} from './services/guest.service';
@@ -22,6 +26,7 @@ import {GuestService} from './services/guest.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy{
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
   //title = 'Amanda & Luke are getting married!';
   fbLoginResponse: LoginResponse;
   // guest: GuestComponent;
@@ -30,9 +35,11 @@ export class AppComponent implements OnInit, OnDestroy{
   // party: GuestComponent[] = [];
   isAuthorized: Boolean = false;
   showGuest: Boolean = true;
+  // dialogRef: MdDialogRef<DialogComponent>;
   dialogRef: MdDialogRef<DialogComponent>;
   config: MdSnackBarConfig;
   actionButtonLabel: string = '';
+  // selectedDialog: string = '';
 
   title = 'Amanda & Luke\'s Wedding';
   pages = [
@@ -40,7 +47,7 @@ export class AppComponent implements OnInit, OnDestroy{
       name: 'Wedding',
       icon: 'wedding',
       routerLink: '/wedding',
-      routerLinkActive: true,
+      routerLinkActive: this.isAuthorized,
       // active: true,
     },
     {
@@ -80,6 +87,7 @@ export class AppComponent implements OnInit, OnDestroy{
     // To avoid XSS attacks, the URL needs to be trusted from inside of your application.
     const iconsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('../assets/images/icons.svg');
     console.log(iconsSafeUrl)
+    
     this.iconRegistry.addSvgIconSetInNamespace('icons', iconsSafeUrl);
     this.watcher = media.subscribe((change: MediaChange) => {
       this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : "";
@@ -89,14 +97,25 @@ export class AppComponent implements OnInit, OnDestroy{
          this.loadDesktopContent();
       }
     });
+    this.getLoginStatus();
   }
 
   ngOnInit(){
     this.showGuest = false;
     this.config = new MdSnackBarConfig();
     this.config.duration = 5000;
-    
-    this.getLoginStatus();
+    this.guestService.getParty()
+      .takeUntil(this.ngUnsubscribe)
+      .subscribe(party => {
+        this.party = party; 
+        if (party.length>1) {
+          this.isAuthorized = true 
+        } else {
+          this.isAuthorized = false
+        }
+        console.log(this.party)
+      })
+    // this.getLoginStatus();
 
   }
   getGuestDetails (guest: Guest){
@@ -124,17 +143,51 @@ export class AppComponent implements OnInit, OnDestroy{
 
   getLoginStatus():  void {
     console.log('get login status..')
-    this.guestService.getPartyFromValue('lucasjschmidt@gmail.com')
-      .subscribe(res => {
-        this.guestService.setParty(res.guests)
-        this.guestService.getParty()
-          .subscribe(party => {
-            console.log(party)
-            this.party = party
-            console.log(this.party)
-            this.snackbar.open(res.msg, res.title, this.config)
-          })
-      })
+
+    //if localStorage token exists, check if still valid
+    if(this.authService.loggedIn('id_token')){
+      console.log('is authorized..');
+      this.isAuthorized = true;
+      this.authService.getProfile()
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe(res => {
+          console.log(res)
+          // this.guestService.get
+        })
+      // this.authService.getParty()
+      // .subscribe(res => {
+      //   console.log(res);
+      //   let id: number = 0;
+      //   res.party.forEach(guest => {
+      //     id++;
+      //     guest.id = id;
+      //   });
+      //   this.party = res.party;
+      //   this.guestService.setParty(this.party);
+      // });
+      
+    } else {
+      this.openDialog('login')
+    }
+
+    // this.guestService.getPartyFromValue('lucasjschmidt@gmail.com')
+    //   .subscribe(res => {
+    //     this.guestService.setParty(res.guests)
+    //     this.guestService.getParty()
+    //       .subscribe(party => {
+    //         console.log(party)
+    //         this.party = party
+    //         console.log(this.party)
+    //         this.snackbar.open(res.msg, res.title, this.config)
+    //         console.log(this.party.length)
+    //         if(this.party.length<1 && !this.isAuthorized) {
+    //           this.openDialog()
+    //         }
+            
+    //       })
+    //   })
+
+      
     // this.guestService.getParty().subscribe(res => {
     //   console.log(res)
     //   this.party = res.guests
@@ -203,9 +256,14 @@ export class AppComponent implements OnInit, OnDestroy{
     // }
   }
 
-  openDialog() {
-    console.log(this.party);
-    let config: MdDialogConfig = { data: this.party};
+  openDialog(selectedDialog: string) {
+    // console.log(this.party);
+    let config: MdDialogConfig = { disableClose: true, data: {dialog: selectedDialog}};
+    this.dialogRef = this.dialog.open(DialogComponent, config);
+    this.dialogRef.afterClosed().takeUntil(this.ngUnsubscribe).subscribe(() => {
+      this.dialogRef = null;
+    });
+    //   .subscribe()
     // this.dialogRef = this.dialog.open(LoginDialogComponent, config);
 
     // this.dialogRef.afterClosed().subscribe((party: GuestComponent[]) => {
@@ -238,11 +296,13 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   logout(){
-    this.authService.logout();
-    this.isAuthorized = false;
-    this.party = [];
-    this.actionButtonLabel = 'Bye';
-        this.snackbar.open('Stop back for more fun', this.actionButtonLabel, this.config);
+    this.router.navigate(['/wedding'])
+    this.authService.logout()
+    this.isAuthorized = false
+    this.openDialog('login')
+    // this.party = [];
+    this.actionButtonLabel = 'Bye'
+        this.snackbar.open('Stop back for more fun', this.actionButtonLabel, this.config)
   }
 
   showGuestDetails(id: number){
@@ -254,6 +314,8 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
     this.watcher.unsubscribe();
   }
 

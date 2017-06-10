@@ -14,22 +14,30 @@ import { WeddingComponent } from './wedding/wedding.component';
 import { AuthService } from './services/auth.service';
 import { GuestService } from './services/guest.service';
 import { ValidateService } from './services/validate.service';
-import { DialogComponent } from './dialog/dialog.component';
 import { InviteComponent } from './invite/invite.component';
 import { RegistryComponent } from './registry/registry.component';
 import { RsvpComponent } from './rsvp/rsvp.component';
 import { GuestDetailComponent } from './guest-detail/guest-detail.component';
 import 'hammerjs';
+import { DialogComponent } from './dialog/dialog.component';
+import { LoginDialogComponent } from './login-dialog/login-dialog.component';
+import { ForgotPasswordDialogComponent } from './forgot-password-dialog/forgot-password-dialog.component';
+import { ProfileDialogComponent } from './profile-dialog/profile-dialog.component';
+import { FindDialogComponent } from './find-dialog/find-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WeddingComponent,
-    DialogComponent,
     InviteComponent,
     RegistryComponent,
     RsvpComponent,
-    GuestDetailComponent
+    GuestDetailComponent,
+    DialogComponent,
+    LoginDialogComponent,
+    ForgotPasswordDialogComponent,
+    ProfileDialogComponent,
+    FindDialogComponent
     // routedComponents
   ],
   imports: [
@@ -41,6 +49,7 @@ import 'hammerjs';
     FlexLayoutModule,
     AppRoutingModule
   ],
+  entryComponents: [DialogComponent, LoginDialogComponent, ForgotPasswordDialogComponent, ProfileDialogComponent, FindDialogComponent],
   providers: [AuthService, GuestService],
   bootstrap: [AppComponent]
 })

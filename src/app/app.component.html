@@ -19,9 +19,13 @@
         <md-tab label="Wedding">
           <md-nav-list>
             <!--<md-list-item *ngFor="let page of pages">-->
-            <md-list-item *ngFor="let page of pages" routerLink="{{page.routerLink}}" routerLinkActive="{{page.routerLinkActive}}">
+            <md-list-item *ngFor="let page of pages" routerLink="{{page.routerLink}}" routerLinkActive="{{page.routerLinkActive}}" [hidden]="!this.isAuthorized">
               <md-icon svgIcon="icons:{{page.icon}}" class="avatar"></md-icon>
               <span>{{page.name}}</span>
+            </md-list-item>
+            <md-list-item [hidden]="this.isAuthorized" (click)="openDialog('login')">
+              <md-icon svgIcon="icons:login" class="avatar"></md-icon>
+              <span>Login</span>
             </md-list-item>
           </md-nav-list>
         </md-tab>
@@ -31,11 +35,11 @@
               <md-icon svgIcon="icons:party" class="avatar"></md-icon>
               <span>{{g.firstName}} {{g.lastName}}</span>
             </md-list-item>
-            <md-list-item [hidden]="this.isAuthorized">
+            <md-list-item [hidden]="this.isAuthorized" (click)="openDialog('login')">
               <md-icon svgIcon="icons:login" class="avatar"></md-icon>
               <span>Login</span>
             </md-list-item>
-            <md-list-item [hidden]="!this.isAuthorized">
+            <md-list-item [hidden]="!this.isAuthorized" (click)="logout()">
               <md-icon svgIcon="icons:login" class="avatar"></md-icon>
               <span>Logout</span>
             </md-list-item>

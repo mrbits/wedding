@@ -19,7 +19,7 @@
               <md-icon class="small-icon" svgIcon="icons:rsvp"></md-icon><span md-line>&nbsp;RSVP</span>
             </md-grid-tile>
             <md-grid-tile colspan="1" rowspan="1">
-              <md-slide-toggle [color]="accent" [(ngModel)]="guest.rsvp">
+              <md-slide-toggle [color]="accent" [(ngModel)]="guest.rsvp" (change)="saveRsvp(guest)">
                 {{guest.rsvp===true ? 'Going' : 'Not Going'}}
               </md-slide-toggle><span md-card-avatar [class]="guest.rsvp ? 'rsvpYes' : 'rsvpNo'"></span>
             </md-grid-tile>
@@ -27,7 +27,7 @@
               <md-icon class="small-icon" svgIcon="icons:dinner"></md-icon><span md-line>Meal Option</span>
             </md-grid-tile>
             <md-grid-tile colspan="1" rowspan="2" [hidden]="!guest.rsvp">
-              <md-radio-group [(ngModel)]="guest.mealOption">
+              <md-radio-group [(ngModel)]="guest.mealOption" (change)="saveRsvp(guest)">
                 <md-radio-button value="Braised Beef Shortrib">
                   Braised Beef Shortrib
                 </md-radio-button>
@@ -44,7 +44,7 @@
             </md-grid-tile>
             <md-grid-tile colspan="1" rowspan="1" [hidden]="!guest.rsvp">
               <md-input-container>
-                <input mdInput placeholder="Request a Song">
+                <input mdInput placeholder="Request a Song" [(ngModel)]="guest.requestedSong" (change)="saveRsvp(guest)">
               </md-input-container>
             </md-grid-tile>
           </md-grid-list>

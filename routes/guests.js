@@ -171,7 +171,7 @@ router.post('/authenticate', (req, res, next) => {
   
   Guest.getGuestsByEmail(email, (err, guests) => {
     if (err){
-      res.json({success: false, title: errTitle, msg:'Failed to register guest'})
+      res.json({success: false, title: errTitle, msg:'Failed to find email'})
       throw err
     }
    
@@ -181,11 +181,11 @@ router.post('/authenticate', (req, res, next) => {
 
     Guest.comparePassword(unicorn, guests[0].unicorn, (err, isMatch) => {
       if (err){
-        res.json({success: false, title: errTitle, msg:'Failed to register guest'})
+        res.json({success: false, title: errTitle, msg:'Failed to Login'})
         throw err
       }
       if (isMatch){
-        const token = jwt.sign(guests[0]._id, config.secret, {
+        const token = jwt.sign({id: guests[0]._id, partyLeaderFirstName: guests[0].partyLeaderFirstName, partyLeaderLastName: guests[0].partyLeaderLastName}, config.secret, {
           expiresIn: 604800 // 1 week
         })
 
@@ -242,10 +242,10 @@ router.post('/update', (req, res, next) => {
           g = guest
           console.log(g)
         } else {
-          g = getPublicData(g)
-          g.address = guest.address
-          g.phone = guest.phone
-          g.email = guest.email
+          // g = getPublicData(g)
+          // g.address = guest.address
+          // g.phone = guest.phone
+          // g.email = guest.email
         }
         Guest.findOneAndUpdate({_id:g._id}, g, (err) => {
           console.log(err)
@@ -258,7 +258,7 @@ router.post('/update', (req, res, next) => {
         console.log('finished..')
 
         if (itemsProcessed === guests.length){
-          res.json({success: true, title: successTitle, msg: g.firstName + ', your changes have been saved'})
+          res.json({success: true, title: successTitle, msg: g.firstName + ', your changes have been saved', guest: guest})
         }
       })
     } else {
@@ -394,7 +394,26 @@ router.post('/reset/:token', (req, res, next) => {
 // Profile
 router.get('/profile', passport.authenticate('jwt', {session:false}), (req, res, next) => {
     // console.log(req);
-    res.json({guest: req.guest})
+    console.log('profile..')
+    console.log(req.user.partyLeaderFirstName)
+    console.log(req.user.partyLeaderLastName)
+    let itemsProcessed = 0
+    Guest.find({ partyLeaderFirstName: req.user.partyLeaderFirstName, partyLeaderLastName: req.user.partyLeaderLastName }, 
+      function(err, guests) {
+        if (guests.length<1) {
+          res.json({success: false, title: errTitle, msg: 'Failed to Retrieve Party'})
+          // return res.redirect('/forgot');
+        }
+        guests.forEach(guest => {
+          guest = getPublicData(guest)
+          itemsProcessed++
+          if (itemsProcessed === guests.length) {
+            res.json({success: true, title: successTitle, msg: 'Found your Party', guests: guests})
+          }
+        })
+    })
+    // Guest.getGuestsByPartyLeader(req.partyLeaderFirstname, req.partyLeaderLastName, (err, guests))
+    // res.json({guest: req.id})
 })
 
 function getPublicData(guest){

@@ -11,7 +11,7 @@
              <md-icon svgIcon="icons:invite-details" class="avatar"></md-icon><span md-line>&nbsp;Invite</span>
           </md-grid-tile>
           <md-grid-tile colspan="1" rowspan="1">
-            <button md-button color="accent">{{inviteText}} <span [hidden]="inviteDate===''">({{inviteDate}})</span></button>
+            <button md-button color="accent" (click)="getRsvp()">{{inviteText}} <span [hidden]="inviteDate===''">({{inviteDate}})</span></button>
           </md-grid-tile>
           <md-grid-tile colspan="1" rowspan="1" class="first">
              <md-icon svgIcon="icons:rsvp" class="avatar"></md-icon><span md-line>&nbsp;RSVP</span>

@@ -9,7 +9,7 @@ module.exports = function(passport){
     opts.secretOrKey = config.secret
     passport.use(new JwtStrategy(opts, (jwt_payload, done) => {
         console.log('passport..')
-        Guest.getGuestById(jwt_payload._id, (err, guest) => {
+        Guest.getGuestById(jwt_payload.id, (err, guest) => {
             console.log('guest by id..')
             console.log(guest)
             console.log(err)
@@ -17,7 +17,7 @@ module.exports = function(passport){
                 return done(err, false)
             }
             if(guest){
-                return done(null, guest._id)
+                return done(null, {id: guest._id, partyLeaderFirstName: guest.partyLeaderFirstName,  partyLeaderLastName: guest.partyLeaderLastName})
             } else {
                 return done(null,false)
             }

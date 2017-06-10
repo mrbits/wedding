@@ -1,0 +1,22 @@
+<span md-dialog-title>Login</span>
+<div md-dialog-content>Using Facebook</div>
+<!-- facebook button -->
+<div md-dialog-content>-- or do it this way --</div>
+<!-- manual login -->
+<md-input-container class="example-full-width">
+  <input mdInput class=".mat-input-container" #email type="email" placeholder="Email">
+</md-input-container>
+<md-input-container>
+  <input mdInput class=".mat-input-container" #password type="password" placeholder="Password" minlength="8">
+</md-input-container>
+<div md-dialog-actions>
+  <md-select placeholder="More Options" (change)="getDialog($event)">
+    <md-option value="forgot">
+      Forgot Password
+    </md-option>
+    <md-option value="profile">
+      Create Account
+    </md-option>
+  </md-select>
+  <button md-button (click)="loginCustom(email.value, password.value)">Login</button>
+</div>

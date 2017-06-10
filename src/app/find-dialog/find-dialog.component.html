@@ -1,0 +1,14 @@
+<span md-dialog-title>Find Your Invite</span>
+<div md-dialog-content>Select Anyone From Your Party</div>
+<!-- facebook button -->
+<!--<div md-dialog-content>-- or do it this way --</div>-->
+<!-- manual login -->
+<md-radio-group [(ngModel)]="selectedGuest">
+  <md-radio-button *ngFor="let guest of invites" [value]="guest">
+    {{guest.firstName}} {{guest.lastName}}
+  </md-radio-button>
+</md-radio-group>
+<div md-dialog-actions>
+  <button md-button (click)="goBack()">Go Back</button>
+  <button md-button (click)="saveInvite()">Open Invite</button>
+</div>

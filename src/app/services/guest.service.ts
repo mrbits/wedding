@@ -39,6 +39,17 @@ export class GuestService {
     this.party$.next(party)
   }
 
+  setGuest (guest: Guest) {
+    this.party$.asObservable().forEach(g => {
+      console.log(g._id)
+      console.log(guest._id)
+      if (g._id === guest._id) {
+        console.log('match ..')
+        g = guest
+      }
+    })
+  }
+
   //getParty
   ////find
   
