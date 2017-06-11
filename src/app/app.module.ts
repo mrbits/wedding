@@ -14,6 +14,8 @@ import { WeddingComponent } from './wedding/wedding.component';
 import { AuthService } from './services/auth.service';
 import { GuestService } from './services/guest.service';
 import { ValidateService } from './services/validate.service';
+// import { FacebookService } from 'ngx-facebook';
+import { FacebookModule } from 'ngx-facebook';
 import { InviteComponent } from './invite/invite.component';
 import { RegistryComponent } from './registry/registry.component';
 import { RsvpComponent } from './rsvp/rsvp.component';
@@ -47,7 +49,8 @@ import { FindDialogComponent } from './find-dialog/find-dialog.component';
     BrowserAnimationsModule,
     MaterialModule,
     FlexLayoutModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FacebookModule.forRoot()
   ],
   entryComponents: [DialogComponent, LoginDialogComponent, ForgotPasswordDialogComponent, ProfileDialogComponent, FindDialogComponent],
   providers: [AuthService, GuestService],

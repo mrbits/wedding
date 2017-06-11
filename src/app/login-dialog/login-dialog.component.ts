@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 // import { FormsModule } from '@angular/forms';
 import {MdDialog, MdDialogRef, MdDialogConfig, MD_DIALOG_DATA, MdSnackBar, MdSnackBarConfig} from '@angular/material';
+import { FacebookService, InitParams, LoginResponse, UIResponse, UIParams, LoginOptions } from 'ngx-facebook';
 
 import {AuthService} from '../services/auth.service';
 
@@ -12,9 +13,17 @@ import {AuthService} from '../services/auth.service';
 export class LoginDialogComponent  {
   @Output() onGoBack = new EventEmitter<String>()
   @Output() onLogin = new EventEmitter<any>()
+  @Output() onFacebookLogin = new EventEmitter<any>()
 
   selectedValue: string 
-  constructor() { }
+  constructor(private fb: FacebookService) { 
+     this.fb.init({
+      appId: '739283566249095',
+      xfbml: true,
+      version: 'v2.9'
+    })
+      .then(res => console.log(res));
+  }
   // constructor(public dialogRef: MdDialogRef<LoginDialogComponent>) { }
 
   ngOnInit() {
@@ -34,8 +43,58 @@ export class LoginDialogComponent  {
     // }
   }
 
-  loginWithFacebook() {
+  loginWithFacebook(): void {
+    const loginOptions: LoginOptions = {
+      enable_profile_selector: true,
+      return_scopes: true,
+      scope: 'public_profile,email'
+    };
 
+    this.fb.login(loginOptions)
+      .then((res: LoginResponse) => {
+        console.log('Logged in', res)
+        this.getFacebookProfile((err, profile) => {
+          console.log('get profile..')
+          console.log(err)
+          console.log(profile)
+          profile.status = res.status
+          this.onFacebookLogin.emit({status: res.status, facebookId: profile.id, firstName: profile.first_name, lastName: profile.last_name})
+        })
+        // this.onFacebookLogin.emit(res)
+      })
+      .catch(err => console.log('error', err));
+
+    // const loginOptions: LoginOptions = {
+    //   // enable_profile_selector: true,
+    //   return_scopes: true,
+    //   scope: 'public_profile,email'
+    // };
+    // this.fb.login(loginOptions)
+    // .then((res: LoginResponse) => {
+    //   console.log(res)
+    //   if (res.status === 'connected') {
+    //     this.getProfile()
+    //   } else {
+
+    //   }
+    // })
+    // .catch(err => {
+    //   console.error("error",err)
+    //   this.onFacebookLogin.emit(err)
+    // });
+    
+  }
+
+  getFacebookProfile (cb) {
+    this.fb.api('/me?fields=id,first_name,last_name,email')
+      .then((res: any) => {
+        console.log('Got the users profile', res);
+        cb(null, res)
+      })
+      .catch(err => {
+        console.log("error", err)
+        cb(err, null)
+      });
   }
   
   loginCustom(email: String, password: String) {

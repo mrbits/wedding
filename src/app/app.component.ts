@@ -1,7 +1,7 @@
 import { Component,OnInit,OnDestroy } from '@angular/core';
 import {MdIconRegistry,MdDialogRef, MdDialog, MdDialogConfig, MD_DIALOG_DATA, MdSnackBar, MdSnackBarConfig} from '@angular/material';
 import {DomSanitizer} from '@angular/platform-browser';
-import { FacebookService, InitParams, LoginResponse, UIParams, LoginOptions } from 'ngx-facebook';
+import { FacebookService, InitParams, LoginResponse, UIParams, LoginOptions, LoginStatus } from 'ngx-facebook';
 import { Router } from '@angular/router';
 import { ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/add/operator/takeUntil';
@@ -28,7 +28,7 @@ import {GuestService} from './services/guest.service';
 export class AppComponent implements OnInit, OnDestroy{
   private ngUnsubscribe: Subject<void> = new Subject<void>();
   //title = 'Amanda & Luke are getting married!';
-  fbLoginResponse: LoginResponse;
+  // fbLoginResponse: LoginResponse;
   // guest: GuestComponent;
   guest: Guest;
   party: Guest[];
@@ -80,7 +80,8 @@ export class AppComponent implements OnInit, OnDestroy{
   
 
   constructor(private iconRegistry: MdIconRegistry, private sanitizer: DomSanitizer, 
-  private dialog: MdDialog, private authService:AuthService, public snackbar: MdSnackBar,
+  private dialog: MdDialog, private fb: FacebookService,
+  private authService:AuthService, public snackbar: MdSnackBar,
   private guestService: GuestService, private router: Router,  
   private route: ActivatedRoute, media: ObservableMedia) {
     // this.guest = new GuestComponent();
@@ -97,7 +98,16 @@ export class AppComponent implements OnInit, OnDestroy{
          this.loadDesktopContent();
       }
     });
-    this.getLoginStatus();
+    let initParams: InitParams = {
+      appId: '739283566249095',
+      xfbml: true,
+      version: 'v2.9'
+    };
+
+    this.fb.init(initParams)
+    .then (() => {
+      this.getLoginStatus()
+    })
   }
 
   ngOnInit(){
@@ -167,7 +177,32 @@ export class AppComponent implements OnInit, OnDestroy{
       // });
       
     } else {
-      this.openDialog('login')
+      console.log('getLoginStatus..')
+      this.fb.getLoginStatus()
+      .then(res => {
+        console.log(res)
+        if (res.status === 'not_authorized') {
+          this.openDialog('login')
+        } else if (res.status === 'connected') {
+          //validate facebook login
+          this.loginWithFacebook(res.authResponse.userID)
+          // .subscribe(res => {
+          //   if (res.success) {
+          //     this.authService
+          //   } else {
+
+          //   }
+          // })
+          // this.fb.api('/me?fields=id,first_name,last_name,email')
+          // .then((res: any) => {
+          //   console.log('Got the users profile', res)
+          // })
+        }
+      })
+      .catch(err => {
+        console.error(err)
+      })
+      
     }
 
     // this.guestService.getPartyFromValue('lucasjschmidt@gmail.com')
@@ -256,7 +291,24 @@ export class AppComponent implements OnInit, OnDestroy{
     // }
   }
 
-  openDialog(selectedDialog: string) {
+  loginWithFacebook (facebookId: String) {
+    if (facebookId !== undefined) {
+      this.authService.authenticateFacebookUser(facebookId)
+      .subscribe(res => {
+        if (res.success) {
+          console.log('logged in successfully..')
+          this.authService.storeUserData(res.token, res.guests)
+          // return true
+        } else {
+          console.log ('failed to login', res)
+          
+          // return false
+        }
+      })
+    }
+  }
+
+  openDialog (selectedDialog: string) {
     // console.log(this.party);
     let config: MdDialogConfig = { disableClose: true, data: {dialog: selectedDialog}};
     this.dialogRef = this.dialog.open(DialogComponent, config);

@@ -32,7 +32,10 @@ router.post('/find', (req, res, next) => {
   const lastName = req.body.lastName
   const email = req.body.email
   const facebookId = req.body.facebookId
-
+  console.log(firstName)
+  console.log(lastName)
+  console.log(email)
+  console.log(facebookId)
   async.waterfall([
     getGuestsByEmail(email),
     async.apply(getGuestsByFacebookId, facebookId),
@@ -43,18 +46,32 @@ router.post('/find', (req, res, next) => {
       if (err) throw err
       let title = ''
       let msg = ''
+      console.log(guests)
       if (guests === null){
         title = oopsTitle
         msg = 'Invite Not Found, Contact Luke or Amanda'
-      }
-      else if (guests.length === 1){
-        title = successTitle
-        msg = 'Invite Found'
+        res.json({success: guestsFound, title: title, msg: msg, guests: guests})
+      } else if (guests.length === 1) {
+        Guest.getPartyByLeader(guests[0].partyLeaderFirstName, guests[0].partyLeaderLastName, (err, gs) => {
+          if (err) throw err
+          gs.forEach(g => {
+            g = getPublicData(g)
+          })
+          guests = gs
+          res.json({success: guestsFound, title: successTitle, msg: 'Party Found!', guests: guests})
+        })
       } else {
-        title = successTitle
-        msg = 'More Than 1 Potential Invite Found'
+        res.json({success: guestsFound, title: successTitle, msg: 'More than 1 Potential Invite Found', guests: guests})
       }
-      res.json({success: guestsFound, title: title, msg: msg, guests: guests})
+
+      // else if (guests.length === 1){
+      //   title = successTitle
+      //   msg = 'Invite Found'
+      // } else {
+      //   title = successTitle
+      //   msg = 'More Than 1 Potential Invite Found'
+      // }
+      
   })
 })
 
@@ -145,13 +162,15 @@ function getGuestsByLastName(lastName, guestsFound, guests, callback){
 
 // register guest
 router.post('/register', (req, res, next) => {
+  console.log(req.body.unicorn)
   let newGuest = new Guest({
+    _id: req.body._id,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
-    unicorn: req.body.unicorn,
+    unicorn: req.body.unicorn || req.body.facebookId,
     invite: true,
-    inviteDate: Date.now,
+    inviteDate: Date.now(),
     facebookId: req.body.facebookId,
   })
 
@@ -159,7 +178,7 @@ router.post('/register', (req, res, next) => {
     if( err){
       res.json({success: false, title: errTitle, msg:'Failed to register guest'})
     } else {
-      res.json({success: true, title: successTitle, msg:'Guest registered'})
+      res.json({success: true, title: successTitle, msg:newGuest.firstName + ' registered successfully!'})
     }
   })
 })
@@ -188,20 +207,54 @@ router.post('/authenticate', (req, res, next) => {
         const token = jwt.sign({id: guests[0]._id, partyLeaderFirstName: guests[0].partyLeaderFirstName, partyLeaderLastName: guests[0].partyLeaderLastName}, config.secret, {
           expiresIn: 604800 // 1 week
         })
-
-        guests.forEach(g => {
-          g = getPublicData(g)
+        Guest.getPartyByLeader(guests[0].partyLeaderFirstName, guests[0].partyLeaderLastName, (err, guests) => {
+          guests.forEach(g => {
+            g = getPublicData(g)
+          })
+          
+          res.json({
+            success: true,
+            title: successTitle,
+            msg: 'Facebook Account Registered',
+            token: 'JWT '+token,
+            guests: guests
+          })
         })
         
-        res.json({
-          success: true,
-          token: 'JWT '+token,
-          guests: guests
-        })
       } else {
         return res.json({success: false, title: oopsTitle, msg: 'Invalid Email or Password'})
       }
     })
+  })
+})
+
+router.post('/authenticate-facebook', (req, res, next) => {
+  const facebookId = req.body.facebookId
+  // return getParty()
+  Guest.findOne({facebookId: facebookId}, (err, guest) => {
+    if (err) throw err
+    if (guest == null) {
+      return res.json({success: false, title: oopsTitle, msg: 'Facebook Account Not Registered'})
+    } else {
+      const token = jwt.sign({id: guest._id, partyLeaderFirstName: guest.partyLeaderFirstName, partyLeaderLastName: guest.partyLeaderLastName}, config.secret, {
+          expiresIn: 604800 // 1 week
+        })
+        Guest.getPartyByLeader(guest.partyLeaderFirstName, guest.partyLeaderLastName, (err, guests) => {
+          guests.forEach(g => {
+            g = getPublicData(g)
+          })
+          
+          res.json({
+            success: true,
+            title: successTitle,
+            msg: 'Facebook Account Registered',
+            token: 'JWT '+token,
+            guests: guests
+          })
+        })
+        
+      // return res.json({success: true, title: successTitle, msg: 'Facebook Account Registered'})
+    }
   })
 })
 
@@ -419,7 +472,7 @@ router.get('/profile', passport.authenticate('jwt', {session:false}), (req, res,
 function getPublicData(guest){
   console.log('get public data..')
   Object.keys(guest.toObject()).forEach(key => {
-      console.log(key)
+      // console.log(key)
       if(privateFields.indexOf(key)>0){
           guest[key] = undefined
       }

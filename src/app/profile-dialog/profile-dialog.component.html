@@ -13,7 +13,7 @@
   <input mdInput class=".mat-input-container" type="text" placeholder="Last Name" [(ngModel)]="guest.lastName" [disabled]="!isCreate">
 </md-input-container>
 <md-input-container [hidden]="!isCreate">
-  <input mdInput class=".mat-input-container" type="password" placeholder="Password" minlength="8" [(ngModel)]="guest.unicorn">
+  <input mdInput class=".mat-input-container" type="password" #unicorn placeholder="Password" minlength="8" [(ngModel)]="guest.unicorn">
 </md-input-container>
 <md-input-container [hidden]="!isCreate">
   <input mdInput class=".mat-input-container" type="password" #confirmPassword placeholder="Confirm Password" minlength="8">
@@ -24,8 +24,8 @@
 <md-input-container [hidden]="isCreate">
   <input mdInput class=".mat-input-container" type="text" placeholder="Phone" [(ngModel)]="guest.phone">
 </md-input-container>
-<div md-dialog-actions>
-  <button md-button (click)="goBack()" [hidden]="!isCreate">Go Back</button>
-  <button md-button (click)="findInvite()" [hidden]="!isCreate">Find Invite</button>
-  <button md-button (click)="saveProfile()" [hidden]="isCreate">Save & Close</button>
+<div md-dialog-actions align="center">
+  <button md-button (click)="goBack()" [hidden]="!isCreate">Back</button>
+  <button md-raised-button color="accent" (click)="findInvite()" [hidden]="!isCreate">Find Invite</button>
+  <button md-raised-button color="accent" (click)="saveProfile()" [hidden]="isCreate">Save & Close</button>
 </div>

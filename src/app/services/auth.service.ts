@@ -39,6 +39,23 @@ export class AuthService {
       })
   }
 
+  authenticateFacebookUser (facebookId: String) {
+    let headers = new Headers()
+    headers.append('Content-Type','application/json')
+    let ep = this.prepEndpoint('api/guest/authenticate-facebook')
+    return this.http.post(ep, {facebookId: facebookId },{headers: headers})
+      // .map(res => res.json())
+      .map(res => {
+        console.log(res.json())
+        if (res.json().success) {
+          console.log('success..')
+          this.guestService.setParty(res.json().guests)
+        }
+        console.log('return res.json()..')
+        return res.json()   
+      })
+  }
+
   getProfile (){
     let headers = new Headers();
     this.loadToken()

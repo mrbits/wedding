@@ -16,4 +16,5 @@ export class Guest {
   rsvpMessagePrivate: Boolean
   requestedSong: String
   facebookId: String
+  unicorn: String
 }

@@ -34,7 +34,7 @@ export class ProfileDialogComponent implements OnInit {
     this.onGoBack.emit('login')
   }
 
-  findInvite () {
+  findInvite (email: String) {
     this.onFindInvite.emit(this.guest)
   }
 

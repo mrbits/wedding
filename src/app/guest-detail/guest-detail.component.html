@@ -7,6 +7,24 @@
     </md-card-header>
     <md-card-content>
       <md-grid-list cols="1" rowHeight="50px" fxFlex="75">
+        <md-grid-tile colspan="1" rowspan="1" class="first">
+             <md-icon svgIcon="icons:checklist" class="avatar"></md-icon><span md-line>&nbsp;Email</span>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1">
+            <button md-button color="accent" (click)="getProfileDialog()">{{guest.email==='' ? 'Digitally Keep in Touch' : guest.email}}</button>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1" class="first">
+             <md-icon svgIcon="icons:address" class="avatar"></md-icon><span md-line>&nbsp;Address</span>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1">
+            <button md-button color="accent" (click)="getProfileDialog()">{{guest.address==='' ? 'For Thank You\'s, etc.' : guest.address}}</button>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1" class="first">
+             <md-icon svgIcon="icons:phone" class="avatar"></md-icon><span md-line>&nbsp;Phone</span>
+          </md-grid-tile>
+          <md-grid-tile colspan="1" rowspan="1">
+            <button md-button color="accent" (click)="getProfileDialog()">{{guest.phone==='' ? 'Analogally Keep in Touch' : guest.phone}}</button>
+          </md-grid-tile>
           <md-grid-tile colspan="1" rowspan="1" class="first">
              <md-icon svgIcon="icons:invite-details" class="avatar"></md-icon><span md-line>&nbsp;Invite</span>
           </md-grid-tile>
@@ -19,35 +37,17 @@
           <md-grid-tile colspan="1" rowspan="1">
             <button md-button color="accent" (click)="getRsvp()">{{rsvpText}} <span [hidden]="rsvpDate===''">({{rsvpDate}})</span></button>
           </md-grid-tile>
-          <md-grid-tile colspan="1" rowspan="1" class="first">
+          <md-grid-tile colspan="1" rowspan="1" class="first" [hidden]="!guest.rsvp">
              <md-icon svgIcon="icons:dinner" class="avatar"></md-icon><span md-line>&nbsp;Meal Option</span>
           </md-grid-tile>
-          <md-grid-tile colspan="1" rowspan="1">
+          <md-grid-tile colspan="1" rowspan="1" [hidden]="!guest.rsvp">
             <button md-button color="accent" (click)="getRsvp()">{{guest.mealOption==='' ? 'Pick Your Dish!' : guest.mealOption}} <span [hidden]="mealOptionDate===''">({{mealOptionDate}})</span></button>
           </md-grid-tile>
-          <md-grid-tile colspan="1" rowspan="1" class="first">
+          <md-grid-tile colspan="1" rowspan="1" class="first" [hidden]="!guest.rsvp">
              <md-icon svgIcon="icons:music" class="avatar"></md-icon><span md-line>&nbsp;Music</span>
           </md-grid-tile>
-          <md-grid-tile colspan="1" rowspan="1">
+          <md-grid-tile colspan="1" rowspan="1" [hidden]="!guest.rsvp">
             <button md-button color="accent" (click)="getRsvp()">{{guest.requestedSong}}</button>
-          </md-grid-tile>
-          <md-grid-tile colspan="1" rowspan="1" class="first">
-             <md-icon svgIcon="icons:checklist" class="avatar"></md-icon><span md-line>&nbsp;Email</span>
-          </md-grid-tile>
-          <md-grid-tile colspan="1" rowspan="1">
-            <button md-button color="accent" (click)="getProfileDialog()">{{guest.email}}</button>
-          </md-grid-tile>
-          <md-grid-tile colspan="1" rowspan="1" class="first">
-             <md-icon svgIcon="icons:address" class="avatar"></md-icon><span md-line>&nbsp;Address</span>
-          </md-grid-tile>
-          <md-grid-tile colspan="1" rowspan="1">
-            <button md-button color="accent" (click)="getProfileDialog()">{{guest.address==='' ? 'For Invites, etc.' : guest.address}}</button>
-          </md-grid-tile>
-          <md-grid-tile colspan="1" rowspan="1" class="first">
-             <md-icon svgIcon="icons:phone" class="avatar"></md-icon><span md-line>&nbsp;Phone</span>
-          </md-grid-tile>
-          <md-grid-tile colspan="1" rowspan="1">
-            <button md-button color="accent" (click)="getProfileDialog()">{{guest.phone==='' ? 'Keep in Touch' : guest.phone}}</button>
           </md-grid-tile>
       </md-grid-list>
       <!--<md-icon svgIcon="icons:invite-details" class="avatar"></md-icon>

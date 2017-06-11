@@ -18,13 +18,21 @@ export class FindDialogComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    // console.log(this.invites)
   }
 
   goBack () {
-    this.onGoBack.emit('profile')
+    console.log(this.invites.filter(guest => guest.facebookId !== undefined).length)
+    if (this.invites.filter(guest => guest.facebookId !== undefined).length>0){
+      this.onGoBack.emit('login')
+    } else {
+      this.onGoBack.emit('profile')
+    }
+    
   }
 
   saveInvite () {
+    console.log('save invite..', this.selectedGuest)
     this.onSaveInvite.emit(this.selectedGuest)
   }
 

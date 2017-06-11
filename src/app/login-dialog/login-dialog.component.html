@@ -1,9 +1,15 @@
+
 <span md-dialog-title>Login</span>
-<div md-dialog-content>Using Facebook</div>
-<!-- facebook button -->
-<div md-dialog-content>-- or do it this way --</div>
+<div md-dialog-content align="center">
+  <p>Using Facebook</p>
+  <!-- facebook button -->
+  <button md-button (click)="loginWithFacebook()" class="btn-facebook">
+    <md-icon svgIcon="icons:facebook" class="small-icon"></md-icon> Login with Facebook
+  </button>
+  <p>-- or do it this way --</p>
+</div>
 <!-- manual login -->
-<md-input-container class="example-full-width">
+<md-input-container>
   <input mdInput class=".mat-input-container" #email type="email" placeholder="Email">
 </md-input-container>
 <md-input-container>
@@ -18,5 +24,6 @@
       Create Account
     </md-option>
   </md-select>
-  <button md-button (click)="loginCustom(email.value, password.value)">Login</button>
+ 
+  <button md-raised-button color="accent" (click)="loginCustom(email.value, password.value)">Login</button>
 </div>

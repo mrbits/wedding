@@ -134,9 +134,9 @@
 .mat-center-card {
     margin: 0 auto !important;
 }
-.mat-dialog-content {
+/*.mat-dialog-content {
     padding: 0 0 15px 0 !important;
-}
+}*/
 .mat-sidenav {
     background-color: #b4eeaa !important;
 }
@@ -200,4 +200,36 @@ md-icon.avatar-menu{
     line-height: 40px !important;
     /*padding: 4px !important;*/
     font-size: 12px !important;
+}
+.btn-facebook {
+    background-color: #3b5998 !important;
+    color: #fff !important;
+    margin-bottom: 15px !important;
+
+}
+.small-icon {
+    width: 16px !important;
+    height: 16px !important;
+    margin-bottom: 16px !important;
+}
+.mat-dialog-container {
+    width: 320px !important;
+    color: rgba(0,0,0,0.7) !important;
+}
+.mat-dialog-content {
+    text-align: center !important;
+}
+.mat-dialog-title {
+    text-align: center !important;
+    margin-bottom: 10px !important;
+}
+.mat-select {
+    width: 150px !important;
+    margin-right: 15px !important;
+}
+/*.mat-button {
+    margin-right: 15px !important;
+}*/
+.mat-raised-button {
+    margin-left: 15px !important;
 }

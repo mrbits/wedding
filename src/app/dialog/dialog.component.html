@@ -1,4 +1,4 @@
-<find-dialog [hidden]="findHidden" [invites]="invites" (onGoBack)="onGoBack($event)"></find-dialog>
+<find-dialog [hidden]="findHidden" [invites]="invites" (onGoBack)="onGoBack($event)" (onSaveInvite)="onSaveInvite($event)"></find-dialog>
 <forgot-password-dialog [hidden]="forgotHidden" [guest]="guest" (onGoBack)="onGoBack($event)" (onResetPassword)="onResetPassword($event)"></forgot-password-dialog>
-<login-dialog [hidden]="loginHidden" (onGoBack)="onGoBack($event)" (onLogin)="onLogin($event)"></login-dialog>
+<login-dialog [hidden]="loginHidden" (onGoBack)="onGoBack($event)" (onLogin)="onLogin($event)" (onFacebookLogin)="onFacebookLogin($event)"></login-dialog>
 <profile-dialog [hidden]="profileHidden" [guest]="guest" (onGoBack)="onGoBack($event)" (onFindInvite)="onFindInvite($event)" (onSaveProfile)="onSaveProfile($event)"></profile-dialog>

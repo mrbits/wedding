@@ -123,7 +123,7 @@ module.exports.registerGuest = function(guest, callback) {
         bcrypt.hash(guest.unicorn, salt, (err, hash) => {
             if(err) throw err
             guest.unicorn = hash
-            Guest.findOneAndUpdate({_id:guest._id}, guest, {upsert:true}, callback)
+            Guest.findOneAndUpdate({_id:guest._id}, guest, callback)
         })
     })
 }
