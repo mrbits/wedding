@@ -121,11 +121,12 @@ export class AuthService {
   }
 
   prepEndpoint (ep){
-    if (this.isDev){
-      return 'http://localhost:3000/'+ep;
-    } else {
-      // return 'http://localhost:8080/'+ep;
-    }
+    return '/' + ep
+    // if (this.isDev){
+    //   return 'http://localhost:3000/'+ep;
+    // } else {
+    //   // return 'http://localhost:8080/'+ep;
+    // }
   }
 
   resetPassword (email: String) {

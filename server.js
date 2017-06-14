@@ -5,6 +5,15 @@ const cors = require('cors');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
+
+const httpsOptions = {
+  ca: fs.readFileSync('/etc/ssl/certs/lukeandamanda_life.ca-bundle'),
+  key: fs.readFileSync('/etc/ssl/private/lukeandamanda_life.key'),
+  cert: fs.readFileSync('/etc/ssl/certs/lukeandamanda_life.crt')
+};
 
 // Connect To Database
 mongoose.connect(config.database);
@@ -22,7 +31,7 @@ mongoose.connection.on('error', (err) => {
 const app = express();
 
 const guests = require('./routes/guests');
-
+  
 // Port Number
 const port = process.env.PORT || 3000;
 
@@ -30,7 +39,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 
 // Set Static Folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'dist')));
 
 // Body Parser Middleware
 app.use(bodyParser.json());
@@ -43,16 +52,26 @@ require('./config/passport')(passport);
 
 app.use('/api/guest', guests);
 
-// Index Route
-app.get('/', (req, res) => {
-  res.send('Invalid Endpoint');
-});
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/index.html'));
-});
-
 // Start Server
 app.listen(port, () => {
   console.log('Server started on port '+port);
 });
+app.all('*', ensureSecure);
+
+http.createServer(app).listen(3000);
+var appSecure = https.createServer(httpsOptions, app).listen(8443);
+
+app.get('*',function(req,res){
+    res.sendFile(__dirname+'/index.html');
+});
+
+appSecure.listen(8443);
+
+function ensureSecure(req, res, next){
+  if(req.secure){
+    // OK, continue
+    return next();
+  };
+  // handle port numbers if you need non defaults
+  res.redirect('https://' + req.hostname + req.url); // express 4.x
+}

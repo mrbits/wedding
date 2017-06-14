@@ -12,7 +12,8 @@ import {AuthService} from './auth.service'
 @Injectable()
 export class GuestService {
   isDev: boolean
-  endpoint: string = 'http://localhost:3000/api/guest'
+  endpoint: string = '/api/guest'
+  //endpoint: string = 'http://localhost:3000/api/guest'
   private party$ = new BehaviorSubject<any>([])
 
   constructor(private http: Http) { }
