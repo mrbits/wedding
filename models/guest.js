@@ -95,7 +95,7 @@ module.exports.getGuestsByEmail = function(email, callback) {
     Guest.find(query, callback)
 }
 //get ONE record that matches full name in db
-module.exports.getGuestsByFullName = function(lastname, firstname, callback) {
+module.exports.getGuestsByFullName = function(firstname, lastname, callback) {
     console.log(lastname)
     console.log(firstname)
 
