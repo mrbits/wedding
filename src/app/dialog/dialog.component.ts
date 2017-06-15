@@ -81,6 +81,7 @@ export class DialogComponent implements OnInit {
           res.guests.forEach(g => {
             g.unicorn = guest.unicorn
             g.facebookId = guest.facebookId
+            g.email = guest.email
           })
           console.log(res.guests)
           this.invites = res.guests
