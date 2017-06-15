@@ -18,7 +18,7 @@ export class LoginDialogComponent  {
   selectedValue: string 
   constructor(private fb: FacebookService) { 
      this.fb.init({
-      appId: '739283566249095',
+      appId: '2028039097221584',
       xfbml: true,
       version: 'v2.9'
     })

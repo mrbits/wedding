@@ -99,7 +99,7 @@ export class AppComponent implements OnInit, OnDestroy{
       }
     });
     let initParams: InitParams = {
-      appId: '739283566249095',
+      appId: '2028039097221584',
       xfbml: true,
       version: 'v2.9'
     };
