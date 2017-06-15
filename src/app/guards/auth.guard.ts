@@ -10,9 +10,8 @@ export class AuthGuard implements CanActivate{
 
   canActivate(){
     console.log(this.router)
-    
-    if(this.authService.loggedIn('id_token') 
-        && this.router.url.indexOf('guest') < 0){
+
+    if(this.authService.loggedIn('id_token')){
       return true;
     } else {
       this.router.navigate(['/']);
