@@ -7,6 +7,8 @@ import { RegistryComponent } from '../registry/registry.component';
 import { RsvpComponent } from '../rsvp/rsvp.component';
 import { GuestDetailComponent } from '../guest-detail/guest-detail.component';
 
+import { AuthGuard } from '../guards/auth.guard';
+
 const routes: Routes = [
   {
     path: '',
@@ -19,19 +21,23 @@ const routes: Routes = [
   },
   {
     path: 'invite',
-    component: InviteComponent
+    component: InviteComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'registry',
-    component: RegistryComponent
+    component: RegistryComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'rsvp',
-    component: RsvpComponent
+    component: RsvpComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'guest/:id',
-    component: GuestDetailComponent
+    component: GuestDetailComponent,
+    canActivate: [AuthGuard]
   }
 ];
 

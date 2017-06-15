@@ -9,10 +9,13 @@ export class AuthGuard implements CanActivate{
   }
 
   canActivate(){
-    if(this.authService.loggedIn('id_token')){
+    console.log(this.router)
+    
+    if(this.authService.loggedIn('id_token') 
+        && this.router.url.indexOf('guest') < 0){
       return true;
     } else {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/']);
       return false;
     }
   }
