@@ -134,6 +134,8 @@ function getGuestsByFullName(firstName, lastName, guestsFound, guests, callback)
       Guest.getGuestsByFullName(firstName, lastName, (err, guests) => {
         if (guests.length<1){
           console.log('guests < 1')
+          console.log(guests.length)
+          console.log(guests)
           callback(err, false, null)
         } else {
           callback(err, true, guests)
