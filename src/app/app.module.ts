@@ -4,7 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MaterialModule} from '@angular/material';
+// import {MaterialModule} from '@angular/material';
+import {MdCardModule, MdSlideToggleModule, MdInputModule, MdSidenavModule, MdButtonModule, 
+  MdIconModule, MdProgressBarModule, MdDialogModule, MdMenuModule, MdRadioModule} from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {AppRoutingModule } from './app-routing/app-routing.module';
 
@@ -16,7 +18,7 @@ import { GuestService } from './services/guest.service';
 import { ValidateService } from './services/validate.service';
 import { AuthGuard } from './guards/auth.guard';
 // import { FacebookService } from 'ngx-facebook';
-import { FacebookModule } from 'ngx-facebook';
+// import { FacebookModule } from 'ngx-facebook';
 import { InviteComponent } from './invite/invite.component';
 import { RegistryComponent } from './registry/registry.component';
 import { RsvpComponent } from './rsvp/rsvp.component';
@@ -48,10 +50,18 @@ import { FindDialogComponent } from './find-dialog/find-dialog.component';
     FormsModule,
     HttpModule,
     BrowserAnimationsModule,
-    MaterialModule,
     FlexLayoutModule,
     AppRoutingModule,
-    FacebookModule.forRoot()
+    MdCardModule,
+    MdSlideToggleModule,
+    MdInputModule,
+    MdSidenavModule,
+    MdButtonModule,
+    MdIconModule,
+    MdProgressBarModule,
+    MdDialogModule,
+    MdMenuModule,
+    MdRadioModule
   ],
   entryComponents: [DialogComponent, LoginDialogComponent, ForgotPasswordDialogComponent, ProfileDialogComponent, FindDialogComponent],
   providers: [AuthService, GuestService, AuthGuard],
