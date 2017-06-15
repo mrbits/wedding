@@ -301,7 +301,7 @@ export class AppComponent implements OnInit, OnDestroy{
           // return true
         } else {
           console.log ('failed to login', res)
-          
+          this.openDialog('login')
           // return false
         }
       })

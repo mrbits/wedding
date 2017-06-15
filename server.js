@@ -58,7 +58,7 @@ app.listen(port, () => {
 });
 app.all('*', ensureSecure);
 
-http.createServer(app).listen(3000);
+//http.createServer(app).listen(3000);
 var appSecure = https.createServer(httpsOptions, app).listen(8443);
 
 app.get('*',function(req,res){

@@ -55,6 +55,9 @@ router.post('/find', (req, res, next) => {
         Guest.getPartyByLeader(guests[0].partyLeaderFirstName, guests[0].partyLeaderLastName, (err, gs) => {
           if (err) throw err
           gs.forEach(g => {
+            if (g.inviteDate > new Date('12-31-1999')) {
+              delete g
+            }
             g = getPublicData(g)
           })
           guests = gs
