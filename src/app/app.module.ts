@@ -6,7 +6,7 @@ import { HttpModule } from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 // import {MaterialModule} from '@angular/material';
 import {MdCardModule, MdSlideToggleModule, MdInputModule, MdSidenavModule, MdButtonModule, 
-  MdIconModule, MdProgressBarModule, MdDialogModule, MdMenuModule, MdRadioModule} from '@angular/material';
+  MdIconModule, MdProgressBarModule, MdDialogModule, MdMenuModule, MdRadioModule, MdSnackBarModule} from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {AppRoutingModule } from './app-routing/app-routing.module';
 
@@ -61,7 +61,8 @@ import { FindDialogComponent } from './find-dialog/find-dialog.component';
     MdProgressBarModule,
     MdDialogModule,
     MdMenuModule,
-    MdRadioModule
+    MdRadioModule,
+    MdSnackBarModule
   ],
   entryComponents: [DialogComponent, LoginDialogComponent, ForgotPasswordDialogComponent, ProfileDialogComponent, FindDialogComponent],
   providers: [AuthService, GuestService, ValidateService, AuthGuard, FacebookService],
