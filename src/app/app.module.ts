@@ -17,7 +17,7 @@ import { AuthService } from './services/auth.service';
 import { GuestService } from './services/guest.service';
 import { ValidateService } from './services/validate.service';
 import { AuthGuard } from './guards/auth.guard';
-// import { FacebookService } from 'ngx-facebook';
+import { FacebookService } from 'ngx-facebook';
 // import { FacebookModule } from 'ngx-facebook';
 import { InviteComponent } from './invite/invite.component';
 import { RegistryComponent } from './registry/registry.component';
@@ -64,7 +64,7 @@ import { FindDialogComponent } from './find-dialog/find-dialog.component';
     MdRadioModule
   ],
   entryComponents: [DialogComponent, LoginDialogComponent, ForgotPasswordDialogComponent, ProfileDialogComponent, FindDialogComponent],
-  providers: [AuthService, GuestService, ValidateService, AuthGuard],
+  providers: [AuthService, GuestService, ValidateService, AuthGuard, FacebookService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
