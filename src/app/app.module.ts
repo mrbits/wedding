@@ -64,7 +64,7 @@ import { FindDialogComponent } from './find-dialog/find-dialog.component';
     MdRadioModule
   ],
   entryComponents: [DialogComponent, LoginDialogComponent, ForgotPasswordDialogComponent, ProfileDialogComponent, FindDialogComponent],
-  providers: [AuthService, GuestService, AuthGuard],
+  providers: [AuthService, GuestService, ValidateService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
