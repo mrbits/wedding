@@ -476,9 +476,9 @@ router.get('/profile', passport.authenticate('jwt', {session:false}), (req, res,
 
 router.post('/validate-email', (req, res, next) => {
   console.log('validate email..')
-  console.log(req.email)
+  console.log(req.body.email)
 
-  Guest.findOne({email: req.email}, (err, guest) => {
+  Guest.findOne({email: req.body.email}, (err, guest) => {
     if (err) throw err
     if (guest.length<1) {
       res.json({success: true})
