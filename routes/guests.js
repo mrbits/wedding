@@ -474,7 +474,7 @@ router.get('/profile', passport.authenticate('jwt', {session:false}), (req, res,
     // res.json({guest: req.id})
 })
 
-router.get('/validate-email', (req, res, next) => {
+router.post('/validate-email', (req, res, next) => {
   console.log('validate email..')
   console.log(req.email)
 
