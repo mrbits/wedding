@@ -140,4 +140,16 @@ export class AuthService {
         return res.json()
       })
   }
+
+  checkEmail (email: String) {
+    let headers = new Headers()
+    // this.loadToken();
+    // headers.append('Authorization', this.authToken);
+    headers.append('Content-Type','application/json')
+    let ep = this.prepEndpoint('api/guest/validate-email')
+    return this.http.post(ep, {email: email}, {headers: headers})
+      .map(res => {
+        return res.json()
+      })
+  }
 }

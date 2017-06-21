@@ -474,6 +474,20 @@ router.get('/profile', passport.authenticate('jwt', {session:false}), (req, res,
     // res.json({guest: req.id})
 })
 
+router.get('/validate-email', (req, res, next) => {
+  console.log('validate email..')
+  console.log(req.email)
+
+  Guest.findOne({email: req.email}, (err, guest) => {
+    if (err) throw err
+    if (guest.length<1) {
+      res.json({success: true})
+    } else {
+      res.json({success: false})
+    }
+  })
+})
+
 function getPublicData(guest){
   console.log('get public data..')
   Object.keys(guest.toObject()).forEach(key => {

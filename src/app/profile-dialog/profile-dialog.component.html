@@ -3,29 +3,75 @@
 <!-- facebook button -->
 <div md-dialog-content>{{isCreate ? '(and find your invite!)' : '(no one likes bad data)'}}</div>
 <!-- manual login -->
+<form name="profileForm">
 <md-input-container>
-  <input mdInput class=".mat-input-container" type="email" placeholder="Email" [(ngModel)]="guest.email">
+  <!--<input mdInput class=".mat-input-container" type="email" placeholder="Email" name="email" [(ngModel)]="guest.email">-->
+  <input mdInput class=".mat-input-container" type="email" placeholder="email" name="email" [formControl]="emailFormControl">
+    <md-error *ngIf="emailFormControl.hasError('required')">
+      This field is required
+    </md-error>
+    <md-error *ngIf="emailFormControl.hasError('pattern')">
+      Please enter a valid email address
+    </md-error>
+    <md-error *ngIf="checkEmail()">
+      This email address is already being used
+    </md-error>
 </md-input-container>
 <md-input-container>
-  <input mdInput class=".mat-input-container" type="text" placeholder="First Name" [(ngModel)]="guest.firstName" [disabled]="!isCreate">
+  <input mdInput class=".mat-input-container" type="text" noSpace placeholder="First Name" name="firstName" [(ngModel)]="guest.firstName" [disabled]="!isCreate" (change)="trim({key: 'firstName', guest: guest})" [formControl]="firstNameFormControl">
+  <md-error *ngIf="firstNameFormControl.hasError('required')">
+    This field is required
+  </md-error>
+  <md-error *ngIf="firstNameFormControl.hasError('minlength') || firstNameFormControl.hasError('pattern')">
+    First Name must be 2 or more characters
+  </md-error>
 </md-input-container>
 <md-input-container>
-  <input mdInput class=".mat-input-container" type="text" placeholder="Last Name" [(ngModel)]="guest.lastName" [disabled]="!isCreate">
+  <input mdInput class=".mat-input-container" type="text" placeholder="Last Name" name="lastName" [(ngModel)]="guest.lastName" [disabled]="!isCreate" (change)="trim({key: 'lastName', guest: guest})" [formControl]="lastNameFormControl">
+  <md-error *ngIf="lastNameFormControl.hasError('required')">
+    This field is required
+  </md-error>
+  <md-error *ngIf="lastNameFormControl.hasError('minlength')">
+    Last Name must be 2 or more characters
+  </md-error>
 </md-input-container>
 <md-input-container [hidden]="!isCreate">
-  <input mdInput class=".mat-input-container" type="password" #unicorn placeholder="Password" minlength="8" [(ngModel)]="guest.unicorn">
+  <input mdInput class=".mat-input-container" type="password" name="unicorn" #unicorn placeholder="Password" [(ngModel)]="guest.unicorn" (change)="trim({key: 'unicorn', guest: guest})" [formControl]="passwordFormControl">
+  <md-error *ngIf="passwordFormControl.hasError('required')">
+    This field is required
+  </md-error>
+  <md-error *ngIf="passwordFormControl.hasError('minlength')">
+    Password must be 8 or more characters
+  </md-error>
+  <md-error *ngIf="checkPasswords(confirmPassword) && !passwordFormControl.hasError('required') && !passwordFormControl.hasError('minlength')">
+    Passwords do not match
+  </md-error>
 </md-input-container>
 <md-input-container [hidden]="!isCreate">
-  <input mdInput class=".mat-input-container" type="password" #confirmPassword placeholder="Confirm Password" minlength="8">
+  <input mdInput class=".mat-input-container" type="password" name="confirmPassword" #confirmPassword placeholder="Confirm Password" [formControl]="passwordFormControl">
+  <md-error *ngIf="passwordFormControl.hasError('required')">
+    This field is required
+  </md-error>
+  <md-error *ngIf="passwordFormControl.hasError('minlength')">
+    Password must be 8 or more characters
+  </md-error>
+  <md-error *ngIf="checkPasswords(confirmPassword) && !passwordFormControl.hasError('required') && !passwordFormControl.hasError('minlength')">
+    Passwords do not match
+  </md-error>
 </md-input-container>
 <md-input-container [hidden]="isCreate">
-  <input mdInput class=".mat-input-container" type="text" placeholder="Address" [(ngModel)]="guest.address">
+  <input mdInput class=".mat-input-container" type="text" name="address" placeholder="Address" [(ngModel)]="guest.address">
 </md-input-container>
 <md-input-container [hidden]="isCreate">
-  <input mdInput class=".mat-input-container" type="text" placeholder="Phone" [(ngModel)]="guest.phone">
+  <input mdInput class=".mat-input-container" type="text" name="phone" placeholder="Phone" [(ngModel)]="guest.phone">
 </md-input-container>
 <div md-dialog-actions align="center">
   <button md-button (click)="goBack()" [hidden]="!isCreate">Back</button>
-  <button md-raised-button color="accent" (click)="findInvite()" [hidden]="!isCreate">Find Invite</button>
-  <button md-raised-button color="accent" (click)="saveProfile()" [hidden]="isCreate">Save & Close</button>
+  <!--<button md-raised-button color="primary"
+            (click)="formControl.enabled ? formControl.disable() : formControl.enable()">
+      DISABLE REACTIVE CTRL
+    </button>-->
+  <button md-raised-button color="accent" (click)="findInvite()" [hidden]="!isCreate" [disabled]="!checkCreate(confirmPassword.value)">Find Invite</button>
+  <button md-raised-button color="accent" (click)="saveProfile()" [hidden]="isCreate" [disabled]="!checkCreate()">Save & Close</button>
 </div>
+</form>

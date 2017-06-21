@@ -1,12 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 // import {MaterialModule} from '@angular/material';
 import {MdCardModule, MdSlideToggleModule, MdInputModule, MdSidenavModule, MdButtonModule, 
-  MdIconModule, MdProgressBarModule, MdDialogModule, MdMenuModule, MdRadioModule, MdSnackBarModule} from '@angular/material';
+  MdIconModule, MdProgressBarModule, MdDialogModule, MdMenuModule, MdRadioModule, 
+  MdSnackBarModule, MdToolbarModule, MdTabsModule, MdListModule, MdSelectModule} from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {AppRoutingModule } from './app-routing/app-routing.module';
 
@@ -29,6 +30,7 @@ import { LoginDialogComponent } from './login-dialog/login-dialog.component';
 import { ForgotPasswordDialogComponent } from './forgot-password-dialog/forgot-password-dialog.component';
 import { ProfileDialogComponent } from './profile-dialog/profile-dialog.component';
 import { FindDialogComponent } from './find-dialog/find-dialog.component';
+import { NoWhitespaceDirective } from './shared/no-whitespace.directive';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,8 @@ import { FindDialogComponent } from './find-dialog/find-dialog.component';
     LoginDialogComponent,
     ForgotPasswordDialogComponent,
     ProfileDialogComponent,
-    FindDialogComponent
+    FindDialogComponent,
+    NoWhitespaceDirective,
     // routedComponents
   ],
   imports: [
@@ -62,7 +65,12 @@ import { FindDialogComponent } from './find-dialog/find-dialog.component';
     MdDialogModule,
     MdMenuModule,
     MdRadioModule,
-    MdSnackBarModule
+    MdSnackBarModule,
+    MdToolbarModule,
+    MdTabsModule,
+    MdListModule,
+    MdSelectModule,
+    ReactiveFormsModule
   ],
   entryComponents: [DialogComponent, LoginDialogComponent, ForgotPasswordDialogComponent, ProfileDialogComponent, FindDialogComponent],
   providers: [AuthService, GuestService, ValidateService, AuthGuard, FacebookService],
