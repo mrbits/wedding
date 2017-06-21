@@ -479,8 +479,9 @@ router.post('/validate-email', (req, res, next) => {
   console.log(req.body.email)
 
   Guest.findOne({email: req.body.email}, (err, guest) => {
+    console.log(guest)
     if (err) throw err
-    if (guest.length<1) {
+    if (guest === null) {
       res.json({success: true})
     } else {
       res.json({success: false})
