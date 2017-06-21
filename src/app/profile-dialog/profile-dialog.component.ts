@@ -65,8 +65,7 @@ export class ProfileDialogComponent implements OnInit {
     this.onGoBack.emit('login')
   }
 
-  findInvite (profileForm) {
-    console.log(profileForm)
+  findInvite () {
     // if (this.validateService.validateGuest(this.guest, true)) {
       this.onFindInvite.emit(this.guest)
     // }
