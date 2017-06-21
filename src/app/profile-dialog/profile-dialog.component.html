@@ -72,6 +72,6 @@
       DISABLE REACTIVE CTRL
     </button>-->
   <button md-raised-button color="accent" (click)="findInvite()" [hidden]="!isCreate" [disabled]="!checkCreate(confirmPassword.value)">Find Invite</button>
-  <button md-raised-button color="accent" (click)="saveProfile()" [hidden]="isCreate" [disabled]="!checkCreate()">Save & Close</button>
+  <button md-raised-button color="accent" (click)="saveProfile()" [hidden]="isCreate" [disabled]="!checkCreate(confirmPassword.value)">Save & Close</button>
 </div>
 </form>
