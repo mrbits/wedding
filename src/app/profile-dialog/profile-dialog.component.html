@@ -6,14 +6,14 @@
 <form name="profileForm">
 <md-input-container>
   <!--<input mdInput class=".mat-input-container" type="email" placeholder="Email" name="email" [(ngModel)]="guest.email">-->
-  <input mdInput class=".mat-input-container" type="email" placeholder="email" name="email" [formControl]="emailFormControl" [(ngModel)]="guest.email" >
+  <input mdInput class=".mat-input-container" type="email" placeholder="email" (change)="checkEmail()" name="email" [formControl]="emailFormControl" [(ngModel)]="guest.email" >
     <md-error *ngIf="emailFormControl.hasError('required')">
       This field is required
     </md-error>
     <md-error *ngIf="emailFormControl.hasError('pattern')">
       Please enter a valid email address
     </md-error>
-    <md-error *ngIf="checkEmail()">
+    <md-error *ngIf="checkEmailValid()">
       This email address is already being used
     </md-error>
 </md-input-container>
