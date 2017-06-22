@@ -92,7 +92,9 @@ export class ProfileDialogComponent implements OnInit {
     } else {
       this.authService.checkEmail(this.guest.email)
       .subscribe(res => {
+        console.log(res)
         if (res.success) {
+          
           this.emailInvalid = false
           // return {NotEqual: true}
         } else {
@@ -105,9 +107,9 @@ export class ProfileDialogComponent implements OnInit {
 
   checkEmailValid () {
     if (this.emailInvalid) {
-      return {NotEqual: false}
-    } else {
       return {NotEqual: true}
+    } else {
+      return {NotEqual: false}
     }
   }
 
