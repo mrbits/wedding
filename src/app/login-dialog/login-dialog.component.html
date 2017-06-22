@@ -37,5 +37,5 @@
     </md-option>
   </md-select>
  
-  <button md-raised-button color="accent" [disabled]="checkLoginFields()" (click)="loginCustom(email.value, password.value)">Login</button>
+  <button md-raised-button color="accent" [disabled]="!checkLoginFields()" (click)="loginCustom(email.value, password.value)">Login</button>
 </div>
