@@ -17,6 +17,7 @@ export class ProfileDialogComponent implements OnInit {
   @Output() onFindInvite = new EventEmitter<Guest>()
   @Output() onSaveProfile = new EventEmitter<Guest>()
   active = true
+  emailInvalid: Boolean = false
   isCreate: Boolean
   EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   firstNameFormControl: FormControl
@@ -39,6 +40,7 @@ export class ProfileDialogComponent implements OnInit {
   this.lastNameFormControl = new FormControl('', [Validators.required, Validators.minLength(2)])
   this.emailFormControl = new FormControl('', [Validators.required, Validators.pattern(this.EMAIL_REGEX), this.checkEmail.bind(this)])
   this.passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(8), this.checkPasswords.bind(this)])
+  this.checkEmail()
     // this.buildForm()
   }
 
@@ -87,6 +89,7 @@ export class ProfileDialogComponent implements OnInit {
     console.log('check email..')
     if (this.guest == undefined || this.guest.email == undefined) {
       console.log('not equal..')
+      this.emailInvalid = false
       return {NotEqual: true}
     } else {
       console.log('call check email..')
@@ -94,8 +97,10 @@ export class ProfileDialogComponent implements OnInit {
       .subscribe(res => {
         console.log(res)
         if (res.success) {
+          this.emailInvalid = false
           return {NotEqual: true}
         } else {
+          this.emailInvalid = true
           return {NotEqual: false}
         }
       })

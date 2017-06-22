@@ -10,10 +10,22 @@
 </div>
 <!-- manual login -->
 <md-input-container>
-  <input mdInput class=".mat-input-container" #email type="email" placeholder="Email">
+  <input mdInput class=".mat-input-container" #email type="email" placeholder="Email" (change)="trim(email)" [formControl]="emailFormControl">
+  <md-error *ngIf="emailFormControl.hasError('required')">
+    This field is required
+  </md-error>
+  <md-error *ngIf="emailFormControl.hasError('pattern')">
+    Please enter a valid email address
+  </md-error>
 </md-input-container>
 <md-input-container>
-  <input mdInput class=".mat-input-container" #password type="password" placeholder="Password" minlength="8">
+  <input mdInput class=".mat-input-container" #password type="password" placeholder="Password" (change)="trim(password)" [formControl]="passwordFormControl">
+  <md-error *ngIf="passwordFormControl.hasError('required')">
+    This field is required
+  </md-error>
+  <md-error *ngIf="passwordFormControl.hasError('minlength')">
+    Password must be 8 or more characters
+  </md-error>
 </md-input-container>
 <div md-dialog-actions>
   <md-select placeholder="More Options" (change)="getDialog($event)">
@@ -25,5 +37,5 @@
     </md-option>
   </md-select>
  
-  <button md-raised-button color="accent" (click)="loginCustom(email.value, password.value)">Login</button>
+  <button md-raised-button color="accent" [disabled]="checkLoginFields()" (click)="loginCustom(email.value, password.value)">Login</button>
 </div>

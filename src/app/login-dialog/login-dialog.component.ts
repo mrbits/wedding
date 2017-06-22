@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
-// import { FormsModule } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import {MdDialog, MdDialogRef, MdDialogConfig, MD_DIALOG_DATA, MdSnackBar, MdSnackBarConfig} from '@angular/material';
 import { FacebookService, InitParams, LoginResponse, UIResponse, UIParams, LoginOptions } from 'ngx-facebook';
 
@@ -15,6 +15,10 @@ export class LoginDialogComponent  {
   @Output() onLogin = new EventEmitter<any>()
   @Output() onFacebookLogin = new EventEmitter<any>()
 
+  emailFormControl: FormControl
+  passwordFormControl: FormControl
+  EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
   selectedValue: string 
   constructor(private fb: FacebookService) { 
      this.fb.init({
@@ -28,6 +32,8 @@ export class LoginDialogComponent  {
 
   ngOnInit() {
     console.log('on init.')
+    this.emailFormControl = new FormControl('', [Validators.required, Validators.pattern(this.EMAIL_REGEX)])
+    this.passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(8)])
   }
 
   getDialog(option: any) {
@@ -104,17 +110,18 @@ export class LoginDialogComponent  {
 
     this.onLogin.emit({email: email, password: password})
 
-    // this.authService.authenticateUser(email, password)
-    //   .subscribe(res => {
-    //     if (res.success) {
-    //       console.log('success..')
-    //       console.log(res)
-    //       this.authService.storeUserData(res.token, res.guests)
-    //       this.dialogRef.close()
-    //     } else {
-    //       console.log('error..')
-    //       console.log(res)
-    //     }
-    //   })
+  }
+
+  checkLoginFields () {
+    if (this.emailFormControl.valid && this.passwordFormControl.valid) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  trim (obj) {
+    obj.value = obj.value.trim()
+    console.log(obj)
   }
 }
