@@ -40,7 +40,7 @@ export class ProfileDialogComponent implements OnInit {
   this.lastNameFormControl = new FormControl('', [Validators.required, Validators.minLength(2)])
   this.emailFormControl = new FormControl('', [Validators.required, Validators.pattern(this.EMAIL_REGEX), this.checkEmail.bind(this)])
   this.passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(8), this.checkPasswords.bind(this)])
-  this.checkEmail()
+  // this.checkEmail()
     // this.buildForm()
   }
 
@@ -85,22 +85,24 @@ export class ProfileDialogComponent implements OnInit {
     return true
   }
 
-  checkEmail () {
+  checkEmail (fieldControl) {
     if (this.guest == undefined || this.guest.email == undefined) {
       // this.emailInvalid = false
       // return {NotEqual: true}
     } else {
-      this.authService.checkEmail(this.guest.email)
-      .debounceTime(400)
+      fieldControl.valueChanges.debounceTime(500).switchMap((val) => {
+        return this.authService.checkEmail(this.guest.email)
+      })
       .subscribe(res => {
         console.log(res)
         if (res.success) {
           
           // this.emailInvalid = false
-          return {NotEqual: true}
+          return null
         } else {
           // this.emailInvalid = true
-          return {NotEqual: false}
+          // return {NotEqual: false}
+          return { NotEqual: true }
         }
       })
     }
@@ -123,7 +125,7 @@ export class ProfileDialogComponent implements OnInit {
     // console.log(this.guest.unicorn)
     if (this.guest == undefined) {
       // console.log('undefined')
-      return true
+      return null
     } else {
       // console.log('not undefined')
       // console.log(fieldControl.value === this.guest.unicorn ? null : {NotEqual: true})
