@@ -106,7 +106,8 @@ export class ProfileDialogComponent implements OnInit {
     }
   }
 
-  checkEmailValid () {
+  checkEmailValid (fieldControl) {
+    console.log(fieldControl)
     console.log(this.guest.email)
     console.log(this.emailInvalid)
     if (this.emailInvalid) {
