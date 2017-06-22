@@ -84,9 +84,12 @@ export class ProfileDialogComponent implements OnInit {
   }
 
   checkEmail () {
+    console.log('check email..')
     if (this.guest == undefined || this.guest.email == undefined) {
+      console.log('not equal..')
       return {NotEqual: true}
     } else {
+      console.log('call check email..')
       this.authService.checkEmail(this.guest.email)
       .subscribe(res => {
         console.log(res)
