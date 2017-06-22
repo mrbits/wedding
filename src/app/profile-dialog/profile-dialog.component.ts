@@ -109,9 +109,9 @@ export class ProfileDialogComponent implements OnInit {
     console.log(this.guest.email)
     console.log(this.emailInvalid)
     if (this.emailInvalid) {
-      return {NotEqual: false}
+      return false
     } else {
-      return {NotEqual: true}
+      return true
     }
   }
 
