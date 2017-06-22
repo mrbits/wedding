@@ -38,7 +38,7 @@ export class ProfileDialogComponent implements OnInit {
     }
   this.firstNameFormControl = new FormControl('', [Validators.required, Validators.minLength(2), Validators.pattern('.*\\S.*[a-zA-z0-9 ]')])
   this.lastNameFormControl = new FormControl('', [Validators.required, Validators.minLength(2)])
-  this.emailFormControl = new FormControl('', [Validators.required, Validators.pattern(this.EMAIL_REGEX), this.checkEmailValid.bind(this)])
+  this.emailFormControl = new FormControl('', [Validators.required, Validators.pattern(this.EMAIL_REGEX), this.checkEmail.bind(this)])
   this.passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(8), this.checkPasswords.bind(this)])
   this.checkEmail()
     // this.buildForm()
@@ -87,19 +87,20 @@ export class ProfileDialogComponent implements OnInit {
 
   checkEmail () {
     if (this.guest == undefined || this.guest.email == undefined) {
-      this.emailInvalid = false
+      // this.emailInvalid = false
       // return {NotEqual: true}
     } else {
       this.authService.checkEmail(this.guest.email)
+      .debounceTime(400)
       .subscribe(res => {
         console.log(res)
         if (res.success) {
           
-          this.emailInvalid = false
-          // return {NotEqual: true}
+          // this.emailInvalid = false
+          return {NotEqual: true}
         } else {
-          this.emailInvalid = true
-          // return {NotEqual: false}
+          // this.emailInvalid = true
+          return {NotEqual: false}
         }
       })
     }
