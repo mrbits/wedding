@@ -20,12 +20,14 @@ export class DialogComponent implements OnInit {
   forgotHidden: Boolean = true
   loginHidden: Boolean = true
   profileHidden: Boolean = true
+  isQuery: Boolean = false
+  isClicked: Boolean = false
 
   guest: Guest
   invites: Guest[]
 
-  config: MdSnackBarConfig
-  actionButtonLabel: string = ''
+  snackbarConfig: MdSnackBarConfig
+  snackbarLabel: string = ''
 
   private ngUnsubscribe: Subject<void> = new Subject<void>()
 
@@ -51,8 +53,8 @@ export class DialogComponent implements OnInit {
 
     fb.init(initParams)
 
-    this.config = new MdSnackBarConfig();
-    this.config.duration = 5000;
+    this.snackbarConfig = new MdSnackBarConfig();
+    this.snackbarConfig.duration = 5000;
     
     }
 
@@ -88,6 +90,7 @@ export class DialogComponent implements OnInit {
           this.hideAllDialogs()
           this.findHidden = false
         }
+        this.snackbar.open(res.msg, res.title, this.snackbarConfig)
       })
   }
 
@@ -105,6 +108,8 @@ export class DialogComponent implements OnInit {
       break;
       case 'profile': this.profileHidden = false;
       break;
+      case 'close': this.dialogRef.close();
+      break;
     }
   }
 
@@ -113,7 +118,7 @@ export class DialogComponent implements OnInit {
     this.authService.registerUser(guest)
     .subscribe(res => {
       console.log(res)
-      this.snackbar.open(res.msg, this.actionButtonLabel, this.config)
+      this.snackbar.open(res.msg, this.snackbarLabel, this.snackbarConfig)
       if (guest.facebookId !== undefined) {
         this.onFacebookLogin({status: 'connected', facebookId: guest.facebookId})
       } else {
@@ -132,8 +137,8 @@ export class DialogComponent implements OnInit {
       .takeUntil(this.ngUnsubscribe)
       .subscribe(res => {
         console.log(res)
+         this.snackbar.open(res.msg, res.title, this.snackbarConfig)
         if (res.success) {
-          //profile update saved successfully
           this.dialogRef.close()
         }
       })
@@ -150,13 +155,11 @@ export class DialogComponent implements OnInit {
     this.authService.authenticateUser(creds.email, creds.password)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(res => {
+        this.snackbar.open(res.msg, res.title, this.snackbarConfig)
         if (res.success) {
           console.log(res)
           this.authService.storeUserData(res.token, res.guests)
           this.dialogRef.close()
-        } else {
-          console.log('unsuccess..')
-          console.log(res)
         }
       })
   }
@@ -212,6 +215,7 @@ export class DialogComponent implements OnInit {
     if (facebookRes.facebookId !== undefined) {
       this.authService.authenticateFacebookUser(facebookRes.facebookId)
       .subscribe(res => {
+        this.snackbar.open(res.msg, res.title, this.snackbarConfig)
         if (res.success) {
           console.log('logged in successfully..')
           this.authService.storeUserData(res.token, res.guests)
@@ -234,10 +238,15 @@ export class DialogComponent implements OnInit {
   onResetPassword (email: String) {
     console.log('on forgot password..')
     console.log(email)
+    this.isQuery = true
+    this.isClicked = true
     this.authService.resetPassword(email)
       .takeUntil(this.ngUnsubscribe)
       .subscribe(res => {
         console.log(res)
+        this.isQuery = false
+        this.isClicked = false
+        this.snackbar.open(res.msg, res.title, this.snackbarConfig)
       })
   }
 

@@ -11,8 +11,6 @@ import {MediaChange, ObservableMedia} from "@angular/flex-layout";
 
 import {Guest} from './guest';
 
-// import {GuestComponent} from './guest/guest.component';
-// import {GuestDetailComponent} from './guest-detail/guest-detail.component';
 import {DialogComponent} from './dialog/dialog.component';
 import {ProfileDialogComponent} from './profile-dialog/profile-dialog.component';
 import {ForgotPasswordDialogComponent} from './forgot-password-dialog/forgot-password-dialog.component';
@@ -27,19 +25,13 @@ import {GuestService} from './services/guest.service';
 })
 export class AppComponent implements OnInit, OnDestroy{
   private ngUnsubscribe: Subject<void> = new Subject<void>();
-  //title = 'Amanda & Luke are getting married!';
-  // fbLoginResponse: LoginResponse;
-  // guest: GuestComponent;
   guest: Guest;
   party: Guest[];
-  // party: GuestComponent[] = [];
   isAuthorized: Boolean = false;
   showGuest: Boolean = true;
-  // dialogRef: MdDialogRef<DialogComponent>;
   dialogRef: MdDialogRef<DialogComponent>;
-  config: MdSnackBarConfig;
-  actionButtonLabel: string = '';
-  // selectedDialog: string = '';
+  snackbarConfig: MdSnackBarConfig;
+  snackbarLabel: string = '';
 
   title = 'Amanda & Luke\'s Wedding';
   pages = [
@@ -48,28 +40,24 @@ export class AppComponent implements OnInit, OnDestroy{
       icon: 'wedding',
       routerLink: '/wedding',
       routerLinkActive: this.isAuthorized,
-      // active: true,
     },
     {
       name: 'Invite',
       icon: 'invite-details',
       routerLink: '/invite',
       routerLinkActive: this.isAuthorized,
-      // active: this.isAuthorized,
     },
     {
       name: 'Registry',
       icon: 'registry',
       routerLink: '/registry',
       routerLinkActive: this.isAuthorized,
-      // active: this.isAuthorized,
     },
     {
       name: 'RSVP',
       icon: 'rsvp',
       routerLink: '/rsvp',
       routerLinkActive: this.isAuthorized,
-      // active: this.isAuthorized,
     },
   ];
 
@@ -84,7 +72,6 @@ export class AppComponent implements OnInit, OnDestroy{
   private authService:AuthService, public snackbar: MdSnackBar,
   private guestService: GuestService, private router: Router,  
   private route: ActivatedRoute, media: ObservableMedia) {
-    // this.guest = new GuestComponent();
     // To avoid XSS attacks, the URL needs to be trusted from inside of your application.
     const iconsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('../assets/images/icons.svg');
     console.log(iconsSafeUrl)
@@ -112,8 +99,8 @@ export class AppComponent implements OnInit, OnDestroy{
 
   ngOnInit(){
     this.showGuest = false;
-    this.config = new MdSnackBarConfig();
-    this.config.duration = 5000;
+    this.snackbarConfig = new MdSnackBarConfig();
+    this.snackbarConfig.duration = 5000;
     this.guestService.getParty()
       .takeUntil(this.ngUnsubscribe)
       .subscribe(party => {
@@ -125,8 +112,6 @@ export class AppComponent implements OnInit, OnDestroy{
         }
         console.log(this.party)
       })
-    // this.getLoginStatus();
-
   }
   getGuestDetails (guest: Guest){
     console.log('get guest details')
@@ -134,161 +119,36 @@ export class AppComponent implements OnInit, OnDestroy{
     this.guest = guest
     this.router.navigate(['/guest', guest._id])
   }
-  // loginWithFacebook(): void {
-  //   this.authService.loginWithFacebook()
-  //   .then(res => {
-  //     console.log('login response..');
-  //     console.log(res);
-
-  //     if(res.status==='authorized'){
-  //       this.authService.getFBProfile()
-  //       .then(res => {
-  //         // this.dialogRef.close(this.guest);
-  //       })
-  //     } else {
-  //       // this.dialogRef.close(this.guest);
-  //     }
-  //   });
-  // }
 
   getLoginStatus():  void {
     console.log('get login status..')
 
     //if localStorage token exists, check if still valid
-    if(this.authService.loggedIn('id_token')){
+    if (this.authService.loggedIn('id_token')){
       console.log('is authorized..');
       this.isAuthorized = true;
       this.authService.getProfile()
         .takeUntil(this.ngUnsubscribe)
         .subscribe(res => {
           console.log(res)
-          // this.guestService.get
+          this.snackbar.open(res.msg, res.title, this.snackbarConfig)
         })
-      // this.authService.getParty()
-      // .subscribe(res => {
-      //   console.log(res);
-      //   let id: number = 0;
-      //   res.party.forEach(guest => {
-      //     id++;
-      //     guest.id = id;
-      //   });
-      //   this.party = res.party;
-      //   this.guestService.setParty(this.party);
-      // });
-      
     } else {
       console.log('getLoginStatus..')
       this.fb.getLoginStatus()
-      .then(res => {
+      .then (res => {
         console.log(res)
-        if (res.status === 'not_authorized') {
-          this.openDialog('login')
-        } else if (res.status === 'connected') {
+        if (res.status === 'connected') {
           //validate facebook login
           this.loginWithFacebook(res.authResponse.userID)
-          // .subscribe(res => {
-          //   if (res.success) {
-          //     this.authService
-          //   } else {
-
-          //   }
-          // })
-          // this.fb.api('/me?fields=id,first_name,last_name,email')
-          // .then((res: any) => {
-          //   console.log('Got the users profile', res)
-          // })
+        } else {
+          this.openDialog('login')
         }
       })
-      .catch(err => {
+      .catch (err => {
         console.error(err)
       })
-      
     }
-
-    // this.guestService.getPartyFromValue('lucasjschmidt@gmail.com')
-    //   .subscribe(res => {
-    //     this.guestService.setParty(res.guests)
-    //     this.guestService.getParty()
-    //       .subscribe(party => {
-    //         console.log(party)
-    //         this.party = party
-    //         console.log(this.party)
-    //         this.snackbar.open(res.msg, res.title, this.config)
-    //         console.log(this.party.length)
-    //         if(this.party.length<1 && !this.isAuthorized) {
-    //           this.openDialog()
-    //         }
-            
-    //       })
-    //   })
-
-      
-    // this.guestService.getParty().subscribe(res => {
-    //   console.log(res)
-    //   this.party = res.guests
-    //   this.snackbar.open(res.msg, res.title, this.config)
-    // //             this.openDialog();
-    // })
-    
-    //if localStorage token exists, check if still valid
-    // if(this.authService.loggedIn('id_token')){
-    //   console.log('is authorized..');
-    //   this.isAuthorized = true;
-    //   this.authService.getParty()
-    //   .subscribe(res => {
-    //     console.log(res);
-    //     let id: number = 0;
-    //     res.party.forEach(guest => {
-    //       id++;
-    //       guest.id = id;
-    //     });
-    //     this.party = res.party;
-    //     this.guestService.setParty(this.party);
-    //   });
-      
-    // }
-    
-
-    //if unauthorized
-    // if(!this.isAuthorized){
-    //   //get facebook login status
-    //   this.authService.getLoginStatus()
-    //   .then(res => {
-    //     console.log('login status..');
-    //     console.log(res);
-    //     //if not authorized via facebook then open login dialog
-    //     if(res==='not_authorized'){
-    //       this.openDialog();
-    //     } else {
-    //       //get facebook profile info (name & email), find user, and set localstorage
-    //       this.authService.getFBProfile()
-    //       .then(res => {
-    //         console.log('get fb profile..');
-    //         console.log(res);
-
-    //         this.guest.email = res.email;
-    //         this.guest.unicorn = res.id;
-
-    //         this.authService.loginCustom(this.guest)
-    //         .subscribe(res => {
-    //           console.log(res);
-              
-    //           if(res.success){
-    //             this.authService.storeToken(res.token, res.guest);
-    //             this.party = res.party;
-    //             this.isAuthorized = true;
-    //             this.actionButtonLabel = 'Success';
-    //             this.snackbar.open('You are signed in', this.actionButtonLabel, this.config);
-    //           } else {
-    //             this.actionButtonLabel = 'Oops';
-    //             this.snackbar.open(res.msg, this.actionButtonLabel, this.config);
-    //             this.openDialog();
-    //           }
-    //         })
-    //       });
-    //     }
-    //   });
-    // }
   }
 
   loginWithFacebook (facebookId: String) {
@@ -298,86 +158,53 @@ export class AppComponent implements OnInit, OnDestroy{
         if (res.success) {
           console.log('logged in successfully..')
           this.authService.storeUserData(res.token, res.guests)
-          // return true
         } else {
           console.log ('failed to login', res)
           this.openDialog('login')
-          // return false
         }
       })
     }
   }
 
   openDialog (selectedDialog: string) {
-    // console.log(this.party);
     let config: MdDialogConfig = { disableClose: true, data: {dialog: selectedDialog}};
     this.dialogRef = this.dialog.open(DialogComponent, config);
     this.dialogRef.afterClosed().takeUntil(this.ngUnsubscribe).subscribe(() => {
       this.dialogRef = null;
     });
-    //   .subscribe()
-    // this.dialogRef = this.dialog.open(LoginDialogComponent, config);
-
-    // this.dialogRef.afterClosed().subscribe((party: GuestComponent[]) => {
-    //   console.log('after closed..');
-    //   console.log(party);
-    //   console.log(this.party);
-    //   let id: number = 0;
-    //   if(party.length){
-    //     party.forEach(guest => {
-    //       id++;
-    //       guest.id = id;
-    //       console.log(guest);
-    //     });
-    //     this.party = party;
-    //     this.guestService.setParty(this.party);
-    //     console.log(this.party);
-    //     this.dialogRef = null;
-    //     if(localStorage.getItem('id_token') !== null){
-    //       this.isAuthorized = this.authService.loggedIn('id_token');
-    //     }
-    //   }
-    //   if(!this.isAuthorized){
-    //     this.actionButtonLabel = 'Oops';
-    //     this.snackbar.open('Please login to view details and RSVP', this.actionButtonLabel, this.config);
-    //   } else {
-    //     this.actionButtonLabel = 'Yeah';
-    //     this.snackbar.open('Welcome to the fun zone!', this.actionButtonLabel, this.config);
-    //   }
-    // });
   }
 
-  logout(){
+  logout (){
     this.router.navigate(['/wedding'])
     this.authService.logout()
     this.isAuthorized = false
     this.openDialog('login')
     // this.party = [];
-    this.actionButtonLabel = 'Bye'
-        this.snackbar.open('Stop back for more fun', this.actionButtonLabel, this.config)
+    this.snackbarLabel = 'Bye'
+    this.snackbar.open('Stop back for more fun', this.snackbarLabel, this.snackbarConfig)
   }
 
-  showGuestDetails(id: number){
-    // this.showGuest = true;
+  showGuestDetails (id: number){
     this.router.navigate(['/guest-detail', id]);
   }
-  hideGuestDetails(){
+
+  hideGuestDetails (){
     this.showGuest = false;
   }
 
-  ngOnDestroy() {
+  ngOnDestroy () {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
     this.watcher.unsubscribe();
   }
 
-  loadMobileContent() { 
+  loadMobileContent () { 
     // Do something special since the viewport is currently
     // using mobile display sizes
     this.sideNavMode = 'over';
     this.sideNavOpened = false;
   }
-  loadDesktopContent() { 
+  loadDesktopContent () { 
     // Do something special since the viewport is currently
     // using mobile display sizes
     this.sideNavMode = 'side';

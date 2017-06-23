@@ -13,7 +13,7 @@ import {AuthService} from './auth.service'
 export class GuestService {
   isDev: boolean
   endpoint: string = '/api/guest'
-  //endpoint: string = 'http://localhost:3000/api/guest'
+  // endpoint: string = 'http://localhost:3000/api/guest'
   private party$ = new BehaviorSubject<any>([])
 
   constructor(private http: Http) { }
@@ -29,8 +29,6 @@ export class GuestService {
 
   getPartyFromValue (email?: String, firstName?: String, lastName?: String, facebookId?: String){
     let headers = new Headers();
-    // this.loadToken();
-    // headers.append('Authorization', this.authToken);
     headers.append('Content-Type','application/json');
     return this.http.post(this.endpoint + '/find', {email: email, firstName: firstName, lastName: lastName, facebookId: facebookId}, {headers: headers})
       .map(res => res.json())
@@ -50,33 +48,4 @@ export class GuestService {
       }
     })
   }
-
-  //getParty
-  ////find
-  
-  //setParty (party: Guest[]){
-    // let headers = new Headers();
-    // this.loadToken();
-    // headers.append('Authorization', this.authToken);
-    // headers.append('Content-Type','application/json');
-  // if (this.party.length<1){
-  //  return party must contain 1 or more guests  
-  // }
-  // else {
-    // party.forEach(guest => {
-      // return this.http.get(endpoint + '/update', {headers: headers})
-        // .map(res => res.json());
-    // })
-    // return party has been updated successfully ()
-  // }
-  ////this.party = party
-  // if ()
-
-  //setGuest (guest: Guest){
-    //guest = this.party.filter(g => g._id === guest._id)
-    // if (guest == null) {
-      // return guest is not in the party
-    // }
-    // return guest has been updated successfully
-  // }
 }

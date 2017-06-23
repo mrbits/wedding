@@ -18,7 +18,7 @@ import {Guest} from '../guest';
 export class GuestDetailComponent implements OnInit {
 
   guest: Guest
-  inviteText: string = 'Invite--Denied!'
+  inviteText: string = 'Not opened (guest has no account)'
   rsvpText: string = 'Can you make it?'
   mealOptionText: string = 'Pick your dish!'
   inviteDate: string = ''
@@ -40,9 +40,10 @@ export class GuestDetailComponent implements OnInit {
             this.guest = guest
             console.log(this.guest)
             if (this.guest !== undefined) {
-              this.inviteDate = moment(this.guest.inviteDate).format('MM-DD-YYYY')
-              this.rsvpDate = moment(this.guest.rsvpDate).format('MM-DD-YYYY')
-              this.mealOptionDate = moment(this.guest.mealOptionDate).format('MM-DD-YYYY')
+              console.log(new Date(this.guest.inviteDate) < new Date(2017))
+              this.inviteDate = new Date(this.guest.inviteDate) < new Date(2017,5,1) ? '' : moment(this.guest.inviteDate).format('MM-DD-YYYY')
+              this.rsvpDate = new Date(this.guest.rsvpDate) < new Date(2017,5,1) ? '' : moment(this.guest.rsvpDate).format('MM-DD-YYYY')
+              this.mealOptionDate = new Date(this.guest.mealOptionDate) < new Date(2017,5,1) ? '' : moment(this.guest.mealOptionDate).format('MM-DD-YYYY')
               if (this.inviteDate !== '') {
                 if (this.guest.invite) {
                   this.inviteText = 'Digitally Received'

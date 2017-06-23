@@ -20,11 +20,11 @@ const privateFields = [
     "resetPasswordToken",
     "resetPasswordExpires"
 ]
-const errTitle = 'robot meltdown'
-const oopsTitle = 'oops'
-const greatTitle = 'great job'
-const successTitle = 'success'
-const niceTitle = 'nice'
+const errTitle = 'Robot Meltdown'
+const oopsTitle = 'Oops'
+const greatTitle = 'Great Job!'
+const successTitle = 'Success!'
+const niceTitle = 'Nice!'
 
 //find user in db
 router.post('/find', (req, res, next) => {
@@ -32,6 +32,7 @@ router.post('/find', (req, res, next) => {
   const lastName = req.body.lastName
   const email = req.body.email
   const facebookId = req.body.facebookId
+  console.log('find..')
   console.log(firstName)
   console.log(lastName)
   console.log(email)
@@ -55,26 +56,16 @@ router.post('/find', (req, res, next) => {
         Guest.getPartyByLeader(guests[0].partyLeaderFirstName, guests[0].partyLeaderLastName, (err, gs) => {
           if (err) throw err
           gs.forEach(g => {
-            if (g.inviteDate > new Date('12-31-1999')) {
-              delete g
-            }
-            g = getPublicData(g)
+              g = getPublicData(g)
           })
-          guests = gs
+          guests = gs.filter(g => g.inviteDate < new Date('2017-05-01'))
+          console.log(guests)
           res.json({success: guestsFound, title: successTitle, msg: 'Party Found!', guests: guests})
         })
       } else {
-        res.json({success: guestsFound, title: successTitle, msg: 'More than 1 Potential Invite Found', guests: guests})
+        res.json({success: guestsFound, title: niceTitle, msg: 'More than 1 Potential Invite Found', guests: guests})
       }
-
-      // else if (guests.length === 1){
-      //   title = successTitle
-      //   msg = 'Invite Found'
-      // } else {
-      //   title = successTitle
-      //   msg = 'More Than 1 Potential Invite Found'
-      // }
-      
+      console.log('exit find..')
   })
 })
 
@@ -84,10 +75,12 @@ function getGuestsByEmail(email){
   return function (callback){
     console.log('inside callback..')
     if (email === undefined){
+      console.log('exit get guests email..')
       callback(null, false, null)//no err, guests not found
     } else {
       Guest.getGuestsByEmail(email, (err, guests) => {
         console.log(guests.length)
+        console.log('exit get guests email..')
         if (guests.length<1){
           callback(err, false, null)//err, guests not found
         } else {
@@ -117,7 +110,7 @@ function getGuestsByFacebookId(facebookId, guestsFound, guests, callback){
       }
     })
   }
-  
+  console.log('exit get guests facebookId..')
 }
 
 function getGuestsByFullName(firstName, lastName, guestsFound, guests, callback){
@@ -126,22 +119,23 @@ function getGuestsByFullName(firstName, lastName, guestsFound, guests, callback)
   console.log(lastName)
   console.log(guestsFound)
   console.log(guests)
-    if (guestsFound){
-      callback(null, true, guests)
-    } else if (firstName === undefined || lastName === undefined){
-      callback(null, false, null)//no err, guests not found
-    } else {
-      Guest.getGuestsByFullName(firstName, lastName, (err, guests) => {
-        if (guests.length<1){
-          console.log('guests < 1')
-          console.log(guests.length)
-          console.log(guests)
-          callback(err, false, null)
-        } else {
-          callback(err, true, guests)
-        }
-      })
-    }
+  if (guestsFound){
+    callback(null, true, guests)
+  } else if (firstName === undefined || lastName === undefined){
+    callback(null, false, null)//no err, guests not found
+  } else {
+    Guest.getGuestsByFullName(firstName, lastName, (err, guests) => {
+      if (guests.length<1){
+        console.log('guests < 1')
+        console.log(guests.length)
+        console.log(guests)
+        callback(err, false, null)
+      } else {
+        callback(err, true, guests)
+      }
+    })
+  }
+  console.log('exit et guests fullname..')
 }
 
 function getGuestsByLastName(lastName, guestsFound, guests, callback){
@@ -163,10 +157,12 @@ function getGuestsByLastName(lastName, guestsFound, guests, callback){
       }
     })
   }
+  console.log('exit get guests lastname..')
 }
 
 // register guest
 router.post('/register', (req, res, next) => {
+  console.log('register..')
   console.log(req.body.unicorn)
   let newGuest = new Guest({
     _id: req.body._id,
@@ -183,9 +179,10 @@ router.post('/register', (req, res, next) => {
     if( err){
       res.json({success: false, title: errTitle, msg:'Failed to register guest'})
     } else {
-      res.json({success: true, title: successTitle, msg:newGuest.firstName + ' registered successfully!'})
+      res.json({success: true, title: greatTitle, msg:newGuest.firstName + ' registered successfully!'})
     }
   })
+  console.log('exit register..')
 })
 
 // login
@@ -212,17 +209,27 @@ router.post('/authenticate', (req, res, next) => {
         const token = jwt.sign({id: guests[0]._id, partyLeaderFirstName: guests[0].partyLeaderFirstName, partyLeaderLastName: guests[0].partyLeaderLastName}, config.secret, {
           expiresIn: 604800 // 1 week
         })
-        Guest.getPartyByLeader(guests[0].partyLeaderFirstName, guests[0].partyLeaderLastName, (err, guests) => {
-          guests.forEach(g => {
+        Guest.getPartyByLeader(guests[0].partyLeaderFirstName, guests[0].partyLeaderLastName, (err, gs) => {
+          let itemsProcessed = 0
+          gs.forEach(g => {
+            let count = ++g.visitCount
             g = getPublicData(g)
-          })
-          
-          res.json({
-            success: true,
-            title: successTitle,
-            msg: 'Facebook Account Registered',
-            token: 'JWT '+token,
-            guests: guests
+            g.visitCount = count
+            Guest.findOneAndUpdate({_id:g._id}, g, (err) => {
+              console.log(err)
+              if (err) throw err
+              g.visitCount = undefined
+              itemsProcessed++
+              if (itemsProcessed === gs.length) {
+                res.json({
+                  success: true,
+                  title: successTitle,
+                  msg: guests[0].firstName + ', thanks for stopping in',
+                  token: 'JWT '+token,
+                  guests: gs
+                })
+              }
+            })
           })
         })
         
@@ -234,6 +241,7 @@ router.post('/authenticate', (req, res, next) => {
 })
 
 router.post('/authenticate-facebook', (req, res, next) => {
+  console.log('authenticate facebook..')
   const facebookId = req.body.facebookId
   // return getParty()
   Guest.findOne({facebookId: facebookId}, (err, guest) => {
@@ -242,28 +250,37 @@ router.post('/authenticate-facebook', (req, res, next) => {
       return res.json({success: false, title: oopsTitle, msg: 'Facebook Account Not Registered'})
     } else {
       const token = jwt.sign({id: guest._id, partyLeaderFirstName: guest.partyLeaderFirstName, partyLeaderLastName: guest.partyLeaderLastName}, config.secret, {
-          expiresIn: 604800 // 1 week
-        })
-        Guest.getPartyByLeader(guest.partyLeaderFirstName, guest.partyLeaderLastName, (err, guests) => {
-          guests.forEach(g => {
-            g = getPublicData(g)
+        expiresIn: 604800 // 1 week
+      })
+      Guest.getPartyByLeader(guest.partyLeaderFirstName, guest.partyLeaderLastName, (err, gs) => {
+        let itemsProcessed = 0
+        gs.forEach(g => {
+          let count = ++g.visitCount
+          g = getPublicData(g)
+          g.visitCount = count
+          Guest.findOneAndUpdate({_id:g._id}, g, (err) => {
+            console.log(err)
+            if (err) throw err
+            g.visitCount = undefined
+            itemsProcessed++
+            if (itemsProcessed === gs.length) {
+              res.json({
+                success: true,
+                title: successTitle,
+                msg: guest.firstName + ', thanks for stopping in',
+                token: 'JWT '+token,
+                guests: gs
+              })
+            }
           })
-          
-          res.json({
-            success: true,
-            title: successTitle,
-            msg: 'Facebook Account Registered',
-            token: 'JWT '+token,
-            guests: guests
-          })
         })
-        
-      // return res.json({success: true, title: successTitle, msg: 'Facebook Account Registered'})
+      })
     }
   })
+  console.log('exit authenticate facebook..')
 })
 
-router.post('/update', (req, res, next) => {
+router.post('/update', passport.authenticate('jwt', {session:false}), (req, res, next) => {
   console.log('update..')
   let guest = new Guest({
     _id: req.body._id,
@@ -283,56 +300,28 @@ router.post('/update', (req, res, next) => {
   })
   let itemsProcessed = 0
   console.log('before get guests..')
-
-  Guest.getGuestsByEmail(guest.email, (err, guests) => {
+  
+  Guest.findOneAndUpdate({_id:guest._id}, guest, (err) => {
+    console.log(err)
     if (err) {
+      console.log(guest)
       res.json({success: false, title: errTitle, msg: 'Error saving changes'})
       throw err
     }
-    else if (guests.length>0) {
-      console.log(guests)
-      guests.forEach(g => {
-        itemsProcessed++
-        console.log(guest._id)
-        console.log(g._id)
-        if (guest._id.equals(g._id)){
-          console.log('match..')
-          g = guest
-          console.log(g)
-        } else {
-          // g = getPublicData(g)
-          // g.address = guest.address
-          // g.phone = guest.phone
-          // g.email = guest.email
-        }
-        Guest.findOneAndUpdate({_id:g._id}, g, (err) => {
-          console.log(err)
-          if (err) {
-            console.log(g)
-            res.json({success: false, title: errTitle, msg: 'Error saving changes'})
-            throw err
-          }
-        })
-        console.log('finished..')
-
-        if (itemsProcessed === guests.length){
-          res.json({success: true, title: successTitle, msg: g.firstName + ', your changes have been saved', guest: guest})
-        }
-      })
-    } else {
-      res.json({success: false, title: errTitle, msg: g.firstName + ', an account with email ' + g.email + ' cannot be found'})
-    }
   })
+  res.json({success: true, title: successTitle, msg: guest.firstName + '\'s changes have been saved', guest: guest})
+  console.log('exit update..')
 })
 
 router.post('/forgot', (req, res, next) => {
+  console.log('forgot password..')
   //send email
   async.waterfall([
     function(done) {
       crypto.randomBytes(20, function(err, buf) {
         var token = buf.toString('hex');
         done(err, token);
-      });
+      })
     },
     function(token, done) {
       let itemsProcessed = 0
@@ -364,61 +353,61 @@ router.post('/forgot', (req, res, next) => {
             user: config.email,
             pass: config.emailSecret
         }
-      });
+      })
       var mailOptions = {
         to: guests[0].email,
         from: 'passwordreset@lukeandamanda.life',
         subject: 'Luke & Amanda Wedding Site Password Reset',
         text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
           'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-          'http://localhost:3000/reset/' + token + '\n\n' +
+          'https://lukeandamanda.life/reset/' + token + '\n\n' +
           'If you did not request this, please contact Luke or Amanda. Meanwhile, if you ignore this email, then your password will remain unchanged.\n'
-      };
+      }
       smtpTransport.sendMail(mailOptions, function(err) {
-        res.json({success: true, title: niceTitle, msg: 'An e-mail has been sent to ' + guests[0].email + ' with further instructions.', token: token})
+        res.json({success: true, title: niceTitle, msg: 'Email sent to ' + guests[0].email + ' with further instructions', token: token})
         done(err, 'done');
-      });
+      })
     }
   ], function(err) {
     if (err){
       res.json({success: false, title: errTitle, msg:'Failed to send password reset email'})
       throw err
     }
-    res.json({success: true, title: niceTitle, msg: 'An e-mail has been sent to ' + guest.email + ' with further instructions.'})
-  });
+    res.json({success: true, title: niceTitle, msg: 'Email sent to ' + guest.email + ' with further instructions'})
+  })
+  console.log('exit forgot password..')
 })
 
-router.get('/reset/:token', (req, res, next) => {
-    //redirect to angular route  
-})
+// router.get('/reset/:token', (req, res, next) => {
+//   console.log('')
+//     Guest.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, guest) {
+//     if (!guest) {
+//       res.json({success: false, title: errTitle, msg:'Password reset token is invalid or has expired'})
+//     } else {
+//       res.json({success: true, title: successTitle, msg:'Please set your new password'})
+//     }
+//   });
+// })
 
 router.post('/reset/:token', (req, res, next) => {
-  console.log('post..')
+  console.log('reset password..')
   console.log(req.body)
   console.log(req.params.token)
   async.waterfall([
     function(done) {
       let itemsProcessed = 0
-      Guest.find({ resetPasswordToken: req.params.token, resetPasswordTokenExpires: { $gt: Date.now() } }, function(err, guests) {
-        if (guests.length<1) {
-          res.json({success: false, title: errTitle, msg: 'Password reset token is invalid or has expired.'})
-        }
-        guests.forEach(guest => {
+      Guest.findOne({ resetPasswordToken: req.params.token, resetPasswordTokenExpires: { $gt: Date.now() } }, function(err, guest) {
+        if (!guest) {
+          res.json({success: false, title: errTitle, msg: 'Password reset token is invalid or has expired'})
+        } else {
           guest.unicorn = req.body.password
           guest.resetPasswordToken = ''
           guest.resetPasswordTokenExpires = new Date('1900-01-01')
-          itemsProcessed++
-          if (itemsProcessed === guests.length){
-            Guest.updateGuest(guest, done(err,guests))
-          } else {
-            Guest.updateGuest(guest, (err) => {
-              if (err) throw err
-            })
-          }
-        })
+          Guest.updateGuest(guest, done(err,guest))
+        }
       })
     },
-    function(guests, done) {
+    function(guest, done) {
       console.log('email bit..')
       var smtpTransport = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -430,28 +419,31 @@ router.post('/reset/:token', (req, res, next) => {
         }
       })
       var mailOptions = {
-        to: guests[0].email,
+        to: guest.email,
         from: 'passwordreset@lukeandamanda.life',
         subject: 'Your password has been changed',
-        text: 'Hello,\n\n' +
-          'This is a confirmation that the password for your account ' + guests[0].email + ' has just been changed.\n'
+        text: 'Hi, ' + guest.firstName + '\n\n' +
+          'This is a confirmation that the password for your account ' + guest.email + ' has just been changed.\n\n' +
+          'See you back soon!\n\nLuke and Amanda'
       }
       smtpTransport.sendMail(mailOptions, function(err) {
-        done(err);
+        done(guest.email, err);
       })
     }
-  ], function(err) {
-        if (err){
-          res.json({success: false, title: errTitle, msg:'Failed to reset password'})
-          throw err
-        }
-        res.json({success: true, title: greatTitle, msg: 'Your password has been changed.'})
+  ], function(email, err) {
+      console.log('email', email)
+      if (err){
+        res.json({success: false, title: errTitle, msg:'Failed to reset password'})
+        throw err
+      } else {
+        res.json({success: true, title: greatTitle, msg: 'Your password has been changed', email: email})
+      }    
   })
+  console.log('exit reset password..')
 })
 
 // Profile
 router.get('/profile', passport.authenticate('jwt', {session:false}), (req, res, next) => {
-    // console.log(req);
     console.log('profile..')
     console.log(req.user.partyLeaderFirstName)
     console.log(req.user.partyLeaderLastName)
@@ -460,18 +452,24 @@ router.get('/profile', passport.authenticate('jwt', {session:false}), (req, res,
       function(err, guests) {
         if (guests.length<1) {
           res.json({success: false, title: errTitle, msg: 'Failed to Retrieve Party'})
-          // return res.redirect('/forgot');
         }
         guests.forEach(guest => {
+          let count = ++guest.visitCount
+          
           guest = getPublicData(guest)
-          itemsProcessed++
-          if (itemsProcessed === guests.length) {
-            res.json({success: true, title: successTitle, msg: 'Found your Party', guests: guests})
-          }
+          guest.visitCount = count
+          Guest.findOneAndUpdate({_id:guest._id}, guest, (err) => {
+            console.log(err)
+            if (err) throw err
+            guest.visitCount = undefined
+            itemsProcessed++
+            if (itemsProcessed === guests.length) {
+              res.json({success: true, title: niceTitle, msg: 'Found your Party', guests: guests})
+            }
+          })
         })
     })
-    // Guest.getGuestsByPartyLeader(req.partyLeaderFirstname, req.partyLeaderLastName, (err, guests))
-    // res.json({guest: req.id})
+    console.log('exit profile..')
 })
 
 router.post('/validate-email', (req, res, next) => {
@@ -487,15 +485,15 @@ router.post('/validate-email', (req, res, next) => {
       res.json({success: false})
     }
   })
+  console.log('exit validate email..')
 })
 
 function getPublicData(guest){
   console.log('get public data..')
   Object.keys(guest.toObject()).forEach(key => {
-      // console.log(key)
-      if(privateFields.indexOf(key)>0){
-          guest[key] = undefined
-      }
+    if(privateFields.indexOf(key)>0){
+        guest[key] = undefined
+    }
   }) 
   return guest
 }

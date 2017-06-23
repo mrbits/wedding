@@ -15,38 +15,33 @@ export class LoginDialogComponent  {
   @Output() onLogin = new EventEmitter<any>()
   @Output() onFacebookLogin = new EventEmitter<any>()
 
-  emailFormControl: FormControl
-  passwordFormControl: FormControl
+  emailLoginFormControl: FormControl
+  passwordLoginFormControl: FormControl
+  selectFormControl: FormControl
   EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-  selectedValue: string 
   constructor(private fb: FacebookService) { 
-     this.fb.init({
+    this.fb.init({
       appId: '2028039097221584',
       xfbml: true,
       version: 'v2.9'
     })
-      .then(res => console.log(res));
+    .then(res => console.log(res))
   }
-  // constructor(public dialogRef: MdDialogRef<LoginDialogComponent>) { }
-
   ngOnInit() {
     console.log('on init.')
-    this.emailFormControl = new FormControl('', [Validators.required, Validators.pattern(this.EMAIL_REGEX)])
-    this.passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(8)])
+    this.emailLoginFormControl = new FormControl('', [Validators.required, Validators.pattern(this.EMAIL_REGEX)])
+    this.passwordLoginFormControl = new FormControl('', [Validators.required, Validators.minLength(8)])
+    this.selectFormControl = new FormControl('')
   }
 
   getDialog(option: any) {
-    console.log('get dialog..')
-    console.log(option.value)
-    this.onGoBack.emit(option.value)
-    // if (option.value === 'forgot') {
-    //   //open forgot dialog
-    //   // this.onGoBack.emit('forgot')
-    // } else if (option.value === 'create') {
-    //   //open create dialog
-
-    // }
+    this.selectFormControl.setValue(undefined)
+    if (option.value == undefined) {
+      console.log('option null..')
+    } else {
+      this.onGoBack.emit(option.value)
+    }
   }
 
   loginWithFacebook(): void {
@@ -66,28 +61,8 @@ export class LoginDialogComponent  {
           profile.status = res.status
           this.onFacebookLogin.emit({status: res.status, facebookId: profile.id, firstName: profile.first_name, lastName: profile.last_name})
         })
-        // this.onFacebookLogin.emit(res)
       })
-      .catch(err => console.log('error', err));
-
-    // const loginOptions: LoginOptions = {
-    //   // enable_profile_selector: true,
-    //   return_scopes: true,
-    //   scope: 'public_profile,email'
-    // };
-    // this.fb.login(loginOptions)
-    // .then((res: LoginResponse) => {
-    //   console.log(res)
-    //   if (res.status === 'connected') {
-    //     this.getProfile()
-    //   } else {
-
-    //   }
-    // })
-    // .catch(err => {
-    //   console.error("error",err)
-    //   this.onFacebookLogin.emit(err)
-    // });
+      .catch(err => console.log('error', err))
     
   }
 
@@ -113,7 +88,7 @@ export class LoginDialogComponent  {
   }
 
   checkLoginFields () {
-    if (this.emailFormControl.valid && this.passwordFormControl.valid) {
+    if (this.emailLoginFormControl.valid && this.passwordLoginFormControl.valid) {
       return true
     } else {
       return false

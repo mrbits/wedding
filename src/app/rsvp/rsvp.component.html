@@ -16,18 +16,18 @@
         <md-card-content>
           <md-grid-list cols="1" rowHeight="50px">
             <md-grid-tile colspan="1" rowspan="1" class="first">
-              <md-icon class="small-icon" svgIcon="icons:rsvp"></md-icon><span md-line>&nbsp;RSVP</span>
+              <md-icon class="small-icon rsvp-icon" svgIcon="icons:rsvp"></md-icon><span md-line>&nbsp;RSVP</span>
             </md-grid-tile>
             <md-grid-tile colspan="1" rowspan="1">
-              <md-slide-toggle [color]="accent" [(ngModel)]="guest.rsvp" (change)="saveRsvp(guest)">
+              <md-slide-toggle [color]="accent" [(ngModel)]="guest.rsvp" (change)="saveRsvp(guest, true, false)">
                 {{guest.rsvp===true ? 'Going' : 'Not Going'}}
               </md-slide-toggle><span md-card-avatar [class]="guest.rsvp ? 'rsvpYes' : 'rsvpNo'"></span>
             </md-grid-tile>
             <md-grid-tile colspan="1" rowspan="1" class="first" [hidden]="!guest.rsvp">
-              <md-icon class="small-icon" svgIcon="icons:dinner"></md-icon><span md-line>Meal Option</span>
+              <md-icon class="small-icon rsvp-icon" svgIcon="icons:dinner"></md-icon><span md-line>Meal Option</span>
             </md-grid-tile>
             <md-grid-tile colspan="1" rowspan="2" [hidden]="!guest.rsvp">
-              <md-radio-group [(ngModel)]="guest.mealOption" (change)="saveRsvp(guest)">
+              <md-radio-group [(ngModel)]="guest.mealOption" (change)="saveRsvp(guest, false, true)">
                 <md-radio-button value="Braised Beef Shortrib">
                   Braised Beef Shortrib
                 </md-radio-button>
@@ -40,11 +40,11 @@
               </md-radio-group>
             </md-grid-tile>
             <md-grid-tile colspan="1" rowspan="1" class="first" [hidden]="!guest.rsvp">
-              <md-icon class="small-icon" svgIcon="icons:music"></md-icon><span md-line>Choose a Tune</span>
+              <md-icon class="small-icon rsvp-icon" svgIcon="icons:music"></md-icon><span md-line>Choose a Tune</span>
             </md-grid-tile>
             <md-grid-tile colspan="1" rowspan="1" [hidden]="!guest.rsvp">
               <md-input-container>
-                <input mdInput placeholder="Request a Song" [(ngModel)]="guest.requestedSong" (change)="saveRsvp(guest)">
+                <input mdInput placeholder="Request a Song" [(ngModel)]="guest.requestedSong" (change)="saveRsvp(guest, false, false)">
               </md-input-container>
             </md-grid-tile>
           </md-grid-list>
@@ -52,7 +52,7 @@
       </md-card>
     </md-card-content>
     <md-card-actions align="center">
-      <button md-button (click)="oldSave()">Save Anyways</button>
+      <button md-raised-button color="accent" (click)="oldSave()">SAVE ANYWAYS</button>
     </md-card-actions>
   </md-card>
 </div>

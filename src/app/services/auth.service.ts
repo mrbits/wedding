@@ -1,25 +1,25 @@
-import { Injectable } from '@angular/core';
-import {Http, Headers} from '@angular/http';
-import 'rxjs/add/operator/map';
-import {tokenNotExpired} from 'angular2-jwt';
+import { Injectable } from '@angular/core'
+import {Http, Headers} from '@angular/http'
+import 'rxjs/add/operator/map'
+import {tokenNotExpired} from 'angular2-jwt'
 
-import {GuestService} from './guest.service';
+import {GuestService} from './guest.service'
 
 @Injectable()
 export class AuthService {
 
-  authToken: any;
-  guest: any;
-  isDev:boolean;
+  authToken: any
+  guest: any
+  isDev:boolean
 
   constructor(private http: Http, private guestService: GuestService) { this.isDev = true }
   
   registerUser (guest){
-    let headers = new Headers();
-    headers.append('Content-Type','application/json');
-    let ep = this.prepEndpoint('api/guest/register');
+    let headers = new Headers()
+    headers.append('Content-Type','application/json')
+    let ep = this.prepEndpoint('api/guest/register')
     return this.http.post(ep, guest,{headers: headers})
-      .map(res => res.json());
+      .map(res => res.json())
   }
 
   authenticateUser (email: String, password: String){
@@ -27,7 +27,6 @@ export class AuthService {
     headers.append('Content-Type','application/json')
     let ep = this.prepEndpoint('api/guest/authenticate')
     return this.http.post(ep, {email: email, unicorn: password },{headers: headers})
-      // .map(res => res.json())
       .map(res => {
         console.log(res.json())
         if (res.json().success) {
@@ -44,7 +43,6 @@ export class AuthService {
     headers.append('Content-Type','application/json')
     let ep = this.prepEndpoint('api/guest/authenticate-facebook')
     return this.http.post(ep, {facebookId: facebookId },{headers: headers})
-      // .map(res => res.json())
       .map(res => {
         console.log(res.json())
         if (res.json().success) {
@@ -57,7 +55,7 @@ export class AuthService {
   }
 
   getProfile (){
-    let headers = new Headers();
+    let headers = new Headers()
     this.loadToken()
     headers.append('Authorization', this.authToken)
     headers.append('Content-Type','application/json')
@@ -74,30 +72,26 @@ export class AuthService {
 
   storeUserData (token, party){
     localStorage.setItem('id_token', token)
-    // localStorage.setItem('guest', JSON.stringify(user));
     this.authToken = token
-    // this.guestService.setParty(party)
   }
 
   loadToken (){
-    const token = localStorage.getItem('id_token');
-    this.authToken = token;
+    const token = localStorage.getItem('id_token')
+    this.authToken = token
   }
 
   loggedIn (token: string){
-    return tokenNotExpired(token);
+    return tokenNotExpired(token)
   }
 
   logout (){
-    this.authToken = null;
-    this.guestService.setParty([])//party is set to empty
-    localStorage.clear();
+    this.authToken = null
+    this.guestService.setParty([])
+    localStorage.clear()
   }
 
   getPartyFromValue (email?: String, firstName?: String, lastName?: String, facebookId?: String){
     let headers = new Headers()
-    // this.loadToken();
-    // headers.append('Authorization', this.authToken);
     headers.append('Content-Type','application/json')
     let ep = this.prepEndpoint('api/guest/find')
     return this.http.post(ep, {email: email, firstName: firstName, lastName: lastName, facebookId: facebookId}, {headers: headers})
@@ -106,8 +100,8 @@ export class AuthService {
 
   updateGuest (guest) {
     let headers = new Headers()
-    // this.loadToken();
-    // headers.append('Authorization', this.authToken);
+    this.loadToken()
+    headers.append('Authorization', this.authToken)
     headers.append('Content-Type','application/json')
     let ep = this.prepEndpoint('api/guest/update')
     return this.http.post(ep, guest, {headers: headers})
@@ -123,16 +117,14 @@ export class AuthService {
   prepEndpoint (ep){
     return '/' + ep
     // if (this.isDev){
-    //   return 'http://localhost:3000/'+ep;
+      // return 'http://localhost:3000/'+ep
     // } else {
-    //   // return 'http://localhost:8080/'+ep;
+    //   // return 'http://localhost:8080/'+ep
     // }
   }
 
   resetPassword (email: String) {
     let headers = new Headers()
-    // this.loadToken();
-    // headers.append('Authorization', this.authToken);
     headers.append('Content-Type','application/json')
     let ep = this.prepEndpoint('api/guest/forgot')
     return this.http.post(ep, {email: email}, {headers: headers})
@@ -143,11 +135,19 @@ export class AuthService {
 
   checkEmail (email: String) {
     let headers = new Headers()
-    // this.loadToken();
-    // headers.append('Authorization', this.authToken);
     headers.append('Content-Type','application/json')
     let ep = this.prepEndpoint('api/guest/validate-email')
     return this.http.post(ep, {email: email}, {headers: headers})
+      .map(res => {
+        return res.json()
+      })
+  }
+
+  setPassword (password: String, token: String) {
+    let headers = new Headers()
+    headers.append('Content-Type','application/json')
+    let ep = this.prepEndpoint('api/guest/reset/' + token)
+    return this.http.post(ep, {password: password}, {headers: headers})
       .map(res => {
         return res.json()
       })

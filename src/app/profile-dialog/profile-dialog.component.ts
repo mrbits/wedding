@@ -24,6 +24,7 @@ export class ProfileDialogComponent implements OnInit {
   lastNameFormControl: FormControl
   emailFormControl: FormControl
   passwordFormControl: FormControl
+  initialEmail: String = ''
   constructor (private authService: AuthService) { }
   // constructor(public dialogRef: MdDialogRef<ProfileDialogComponent>) { }
 
@@ -31,40 +32,39 @@ export class ProfileDialogComponent implements OnInit {
     console.log('profile dialog..')
     // console.log(this.data)
     console.log(this.guest)
+    this.firstNameFormControl = new FormControl('', [Validators.required, Validators.minLength(2), Validators.pattern('.*\\S.*[a-zA-z0-9 ]')])
+    this.lastNameFormControl = new FormControl('', [Validators.required, Validators.minLength(2)])
+    this.emailFormControl = new FormControl('', [Validators.required, Validators.pattern(this.EMAIL_REGEX)])
+    this.passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(8), this.checkPasswords.bind(this)])
+    
     if (this.guest._id === undefined) {
       this.isCreate = true
+      this.checkEmail(this.emailFormControl)
     } else {
       this.isCreate = false
+      this.initialEmail = this.guest.email
+      if (this.guest.invite) {
+        this.firstNameFormControl.disable(true)
+        this.lastNameFormControl.disable(true)
+      } else {
+        this.emailFormControl.disable(true)
+      }
     }
-  this.firstNameFormControl = new FormControl('', [Validators.required, Validators.minLength(2), Validators.pattern('.*\\S.*[a-zA-z0-9 ]')])
-  this.lastNameFormControl = new FormControl('', [Validators.required, Validators.minLength(2)])
-  this.emailFormControl = new FormControl('', [Validators.required, Validators.pattern(this.EMAIL_REGEX), this.checkEmail.bind(this)])
-  this.passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(8), this.checkPasswords.bind(this)])
-  // this.checkEmail()
-    // this.buildForm()
+
+    this.emailFormControl.valueChanges
+        .debounceTime(500)
+        .subscribe(() => { 
+          console.log('do..')
+          if (this.isCreate || this.guest.email !== this.initialEmail) this.checkEmail(this.emailFormControl)
+        })
   }
 
-  // buildForm () {
-  //   this.profileForm = this.fb.group({
-  //     'firstNameFormControl': ['',Validators.compose([Validators.required, Validators.minLength(2)])],
-  //     'lastNameFormControl': ['',Validators.compose([Validators.required, Validators.minLength(2)])],
-  //     'emailFormControl': ['',Validators.compose([Validators.required, Validators.pattern(this.EMAIL_REGEX)])],
-  //     'passwordFormControl': ['',Validators.required, Validators.minLength(8), this.checkPasswords.bind(this)],
-  //     // 'confirmPasswordFormControl': this.confirmPasswordFormControl
-  //   })
-  // }
-    // this.profileForm.valueChanges
-    //   .subscribe(data => this.onValueChanged(data));
-
-    // this.onValueChanged(); // (re)set validation messages now
-  //   firstNameFormControl = new FormControl('', [Validators.required, Validators.minLength(2)])
-  // lastNameFormControl = new FormControl('', [Validators.required, Validators.minLength(2)])
-  // emailFormControl = new FormControl('', [Validators.required, Validators.pattern(this.EMAIL_REGEX)])
-  // passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(8), this.checkPasswords.bind(this)])
-  // }
-
   goBack () {
-    this.onGoBack.emit('login')
+    if (this.isCreate) {
+      this.onGoBack.emit('login')
+    } else {
+      this.onGoBack.emit('close')
+    }
   }
 
   findInvite () {
@@ -86,21 +86,28 @@ export class ProfileDialogComponent implements OnInit {
   }
 
   checkEmail (fieldControl) {
-    if (this.guest == undefined || this.guest.email == undefined) {
+    if (this.guest == undefined || this.guest.email == undefined || this.guest.email === '') {
       // this.emailInvalid = false
+      if (this.emailFormControl.errors != null) delete this.emailFormControl.errors.emailInvalid
       // return {NotEqual: true}
     } else {
-      fieldControl.valueChanges.debounceTime(500).switchMap((val) => {
+      // fieldControl.valueChanges.debounceTime(500).switchMap((val) => {
         return this.authService.checkEmail(this.guest.email)
-      })
+      // })
       .subscribe(res => {
         console.log(res)
         if (res.success) {
           
           // this.emailInvalid = false
+          console.log(this.emailFormControl.errors)
+          if (this.emailFormControl.errors != null) delete this.emailFormControl.errors.emailInvalid
+          // this.emailFormControl.errors.filter(err => err !== 'emailInvalid')
+          //this.emailFormControl.setErrors({'emailInvalid':false})
           return null
         } else {
           // this.emailInvalid = true
+          this.emailFormControl.setErrors({'emailInvalid':true})
+          this.checkEmailValid(this.emailFormControl)
           // return {NotEqual: false}
           return { NotEqual: true }
         }
@@ -112,11 +119,11 @@ export class ProfileDialogComponent implements OnInit {
     console.log(fieldControl)
     console.log(this.guest.email)
     console.log(this.emailInvalid)
-    if (this.emailInvalid) {
-      return {'emailInvalid': true}
-    } else {
-      return {'emailInvalid': false}
-    }
+    // if (this.emailInvalid) {
+    //   return {'emailInvalid': true}
+    // } else {
+    //   return {'emailInvalid': false}
+    // }
   }
 
   checkPasswords (fieldControl) {
@@ -141,6 +148,16 @@ export class ProfileDialogComponent implements OnInit {
     } else {
       return false
     }
+  }
+
+  checkUpdate () {
+    if ((this.firstNameFormControl.valid || this.firstNameFormControl.disabled) 
+          && (this.lastNameFormControl.valid || this.lastNameFormControl.disabled)
+          && this.emailFormControl.valid || this.emailFormControl.disabled) {
+          return true
+        } else {
+          return false
+        }
   }
 
   trim (obj) {

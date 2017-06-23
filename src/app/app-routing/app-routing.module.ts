@@ -6,7 +6,7 @@ import { InviteComponent } from '../invite/invite.component';
 import { RegistryComponent } from '../registry/registry.component';
 import { RsvpComponent } from '../rsvp/rsvp.component';
 import { GuestDetailComponent } from '../guest-detail/guest-detail.component';
-
+import { ResetPasswordComponent } from '../reset-password/reset-password.component';
 import { AuthGuard } from '../guards/auth.guard';
 
 const routes: Routes = [
@@ -38,6 +38,10 @@ const routes: Routes = [
     path: 'guest/:id',
     component: GuestDetailComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'reset/:token',
+    component: ResetPasswordComponent
   }
 ];
 

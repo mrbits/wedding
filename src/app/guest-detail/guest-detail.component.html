@@ -23,7 +23,7 @@
              <md-icon svgIcon="icons:phone" class="avatar"></md-icon><span md-line>&nbsp;Phone</span>
           </md-grid-tile>
           <md-grid-tile colspan="1" rowspan="1">
-            <button md-button color="accent" (click)="getProfileDialog()">{{guest.phone==='' ? 'Analogally Keep in Touch' : guest.phone}}</button>
+            <button md-button color="accent" (click)="getProfileDialog()">{{guest.phone==='' ? 'For Chatting' : guest.phone}}</button>
           </md-grid-tile>
           <md-grid-tile colspan="1" rowspan="1" class="first">
              <md-icon svgIcon="icons:invite-details" class="avatar"></md-icon><span md-line>&nbsp;Invite</span>
@@ -47,7 +47,7 @@
              <md-icon svgIcon="icons:music" class="avatar"></md-icon><span md-line>&nbsp;Music</span>
           </md-grid-tile>
           <md-grid-tile colspan="1" rowspan="1" [hidden]="!guest.rsvp">
-            <button md-button color="accent" (click)="getRsvp()">{{guest.requestedSong}}</button>
+            <button md-button color="accent" (click)="getRsvp()">{{guest.requestedSong==='' ? 'Request a Song to Play!' : guest.requestedSong}}</button>
           </md-grid-tile>
       </md-grid-list>
       <!--<md-icon svgIcon="icons:invite-details" class="avatar"></md-icon>

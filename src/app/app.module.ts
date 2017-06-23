@@ -7,7 +7,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 // import {MaterialModule} from '@angular/material';
 import {MdCardModule, MdSlideToggleModule, MdInputModule, MdSidenavModule, MdButtonModule, 
   MdIconModule, MdProgressBarModule, MdDialogModule, MdMenuModule, MdRadioModule, 
-  MdSnackBarModule, MdToolbarModule, MdTabsModule, MdListModule, MdSelectModule} from '@angular/material';
+  MdSnackBarModule, MdToolbarModule, MdTabsModule, MdListModule, MdSelectModule, MdGridListModule} from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {AppRoutingModule } from './app-routing/app-routing.module';
 
@@ -31,6 +31,7 @@ import { ForgotPasswordDialogComponent } from './forgot-password-dialog/forgot-p
 import { ProfileDialogComponent } from './profile-dialog/profile-dialog.component';
 import { FindDialogComponent } from './find-dialog/find-dialog.component';
 import { NoWhitespaceDirective } from './shared/no-whitespace.directive';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { NoWhitespaceDirective } from './shared/no-whitespace.directive';
     ProfileDialogComponent,
     FindDialogComponent,
     NoWhitespaceDirective,
+    ResetPasswordComponent,
     // routedComponents
   ],
   imports: [
@@ -70,6 +72,7 @@ import { NoWhitespaceDirective } from './shared/no-whitespace.directive';
     MdTabsModule,
     MdListModule,
     MdSelectModule,
+    MdGridListModule,
     ReactiveFormsModule
   ],
   entryComponents: [DialogComponent, LoginDialogComponent, ForgotPasswordDialogComponent, ProfileDialogComponent, FindDialogComponent],

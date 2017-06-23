@@ -215,6 +215,9 @@ md-icon.avatar-menu{
     height: 16px !important;
     margin-bottom: 16px !important;
 }
+.rsvp-icon {
+    margin-bottom: 0 !important;
+}
 .mat-dialog-container {
     width: 320px !important;
     color: rgba(0,0,0,0.7) !important;
@@ -235,4 +238,8 @@ md-icon.avatar-menu{
 }*/
 .mat-raised-button {
     margin-left: 15px !important;
+    background-color: #b4eeaa !important;
+}
+.mat-progress-bar { 
+    margin: 10px !important;
 }

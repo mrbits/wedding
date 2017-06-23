@@ -10,25 +10,25 @@
 </div>
 <!-- manual login -->
 <md-input-container>
-  <input mdInput class=".mat-input-container" #email type="email" placeholder="Email" (change)="trim(email)" [formControl]="emailFormControl">
-  <md-error *ngIf="emailFormControl.hasError('required')">
+  <input mdInput class=".mat-input-container" #email type="email" placeholder="Email" (change)="trim(email)" [formControl]="emailLoginFormControl">
+  <md-error *ngIf="emailLoginFormControl.hasError('required')">
     This field is required
   </md-error>
-  <md-error *ngIf="emailFormControl.hasError('pattern')">
+  <md-error *ngIf="emailLoginFormControl.hasError('pattern')">
     Please enter a valid email address
   </md-error>
 </md-input-container>
 <md-input-container>
-  <input mdInput class=".mat-input-container" #password type="password" placeholder="Password" (change)="trim(password)" [formControl]="passwordFormControl">
-  <md-error *ngIf="passwordFormControl.hasError('required')">
+  <input mdInput class=".mat-input-container" #password type="password" placeholder="Password" (change)="trim(password)" [formControl]="passwordLoginFormControl">
+  <md-error *ngIf="passwordLoginFormControl.hasError('required')">
     This field is required
   </md-error>
-  <md-error *ngIf="passwordFormControl.hasError('minlength')">
+  <md-error *ngIf="passwordLoginFormControl.hasError('minlength')">
     Password must be 8 or more characters
   </md-error>
 </md-input-container>
 <div md-dialog-actions>
-  <md-select placeholder="More Options" (change)="getDialog($event)">
+  <md-select placeholder="More Options" (change)="getDialog($event)" [formControl]="selectFormControl">
     <md-option value="forgot">
       Forgot Password
     </md-option>
