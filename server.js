@@ -61,6 +61,11 @@ app.all('*', ensureSecure);
 //http.createServer(app).listen(3000);
 var appSecure = https.createServer(httpsOptions, app).listen(8443);
 
+app.get('/reset/:token', function (req, res) {
+  const token = req.params.token;
+  res.render('reset/' + token);
+});
+
 app.get('*',function(req,res){
     res.sendFile(__dirname+'/index.html');
 });
