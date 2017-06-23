@@ -138,12 +138,12 @@ export class AppComponent implements OnInit, OnDestroy{
       this.fb.getLoginStatus()
       .then (res => {
         console.log(res)
-        if (res.status === 'connected') {
-          //validate facebook login
-          this.loginWithFacebook(res.authResponse.userID)
-        } else {
+        // if (res.status === 'connected') {
+        //   //validate facebook login
+        //   this.loginWithFacebook(res.authResponse.userID)
+        // } else {
           this.openDialog('login')
-        }
+        // }
       })
       .catch (err => {
         console.error(err)
