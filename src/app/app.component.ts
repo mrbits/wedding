@@ -177,6 +177,7 @@ export class AppComponent implements OnInit, OnDestroy{
   logout (){
     this.router.navigate(['/wedding'])
     this.authService.logout()
+    this.fb.logout()
     this.isAuthorized = false
     this.openDialog('login')
     // this.party = [];

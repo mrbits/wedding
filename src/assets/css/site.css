@@ -247,3 +247,6 @@ md-icon.avatar-menu{
     width: 75% !important;
     margin: 0 auto !important;
 }
+.mat-icon-button .mat-icon, .mat-icon-button i {
+    line-height: 40px !important;
+}

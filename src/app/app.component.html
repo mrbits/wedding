@@ -60,4 +60,13 @@
         <md-icon svgIcon="icons:party" class="avatar-menu"></md-icon>
         {{g.firstName}} {{g.lastName}}
       </button>
+      <span md-menu-item>{{this.isAuthorized ? 'Logout Section' : 'Login Section'}}</span>
+      <button md-menu-item [hidden]="this.isAuthorized" (click)="openDialog('login')">
+        <md-icon svgIcon="icons:login" class="avatar-menu"></md-icon>
+        Login
+      </button>
+      <button md-menu-item [hidden]="!this.isAuthorized" (click)="logout()">
+        <md-icon svgIcon="icons:login" class="avatar-menu"></md-icon>
+        Logout
+      </button>
   </md-menu>
