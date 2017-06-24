@@ -10,11 +10,11 @@ import { ResetPasswordComponent } from '../reset-password/reset-password.compone
 import { AuthGuard } from '../guards/auth.guard';
 
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: '/wedding',
-    pathMatch: 'full'
-  },
+  // {
+  //   path: '',
+  //   redirectTo: '/wedding',
+  //   pathMatch: 'full'
+  // },
   {
     path: 'wedding',
     component: WeddingComponent
@@ -51,4 +51,4 @@ const routes: Routes = [
 })
 export class AppRoutingModule { }
 
-export const routedComponents = [WeddingComponent, InviteComponent, RegistryComponent, RsvpComponent];
+export const routedComponents = [WeddingComponent, InviteComponent, RegistryComponent, RsvpComponent, ResetPasswordComponent];

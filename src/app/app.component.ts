@@ -2,8 +2,7 @@ import { Component,OnInit,OnDestroy } from '@angular/core';
 import {MdIconRegistry,MdDialogRef, MdDialog, MdDialogConfig, MD_DIALOG_DATA, MdSnackBar, MdSnackBarConfig} from '@angular/material';
 import {DomSanitizer} from '@angular/platform-browser';
 import { FacebookService, InitParams, LoginResponse, UIParams, LoginOptions, LoginStatus } from 'ngx-facebook';
-import { Router } from '@angular/router';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import 'rxjs/add/operator/takeUntil';
 import {Subscription} from "rxjs/Subscription";
 import { Subject } from 'rxjs/Subject';
@@ -98,6 +97,11 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit(){
+    this.route.params.forEach((params: Params) => {
+      console.log(params)
+    })
+        // if (params['token'] !== undefined) {
+        //   let token = params['token']
     this.showGuest = false;
     this.snackbarConfig = new MdSnackBarConfig();
     this.snackbarConfig.duration = 5000;
