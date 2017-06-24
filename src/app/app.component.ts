@@ -76,6 +76,11 @@ export class AppComponent implements OnInit, OnDestroy{
       console.log(params)
     })
     console.log('after queryparams..')
+    console.log('before params..')
+    this.route.params.forEach((params: Params) => {
+      console.log(params)
+    })
+    console.log('after params..')
     // To avoid XSS attacks, the URL needs to be trusted from inside of your application.
     const iconsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('../assets/images/icons.svg');
     console.log(iconsSafeUrl)
