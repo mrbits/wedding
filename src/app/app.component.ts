@@ -99,7 +99,7 @@ export class AppComponent implements OnInit, OnDestroy{
 
     this.fb.init(initParams)
     .then (() => {
-      if (resetUrl.indexOf('/reset/') && resetUrl.indexOf('/reset/' < resetUrl.length)) this.getLoginStatus()
+      if (!resetUrl.indexOf('/reset/')) this.getLoginStatus()
     })
   }
   
