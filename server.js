@@ -61,9 +61,9 @@ app.all('*', ensureSecure);
 //http.createServer(app).listen(3000);
 var appSecure = https.createServer(httpsOptions, app).listen(8443);
 
-const token = undefined;
+var token = undefined;
 
-app.get('/reset', function (req, res) {
+app.get('/reset/:token', function (req, res) {
   token = req.params.token;
   console.log('reset token..', token);
   console.log(__dirname + '/dist/index.html?reset=' + token)
@@ -72,7 +72,7 @@ app.get('/reset', function (req, res) {
 
 if (token != undefined && token != null) {
   console.log('token..', token)
-  res.redirect('/reset?token=' + token)
+  res.redirect('/reset/' + token + '?token=' + token)
   token = undefined
 }
 
