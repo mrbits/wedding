@@ -1,6 +1,6 @@
-import { Component,OnInit,OnDestroy } from '@angular/core';
+import { Component,OnInit,OnDestroy,Inject } from '@angular/core';
 import {MdIconRegistry,MdDialogRef, MdDialog, MdDialogConfig, MD_DIALOG_DATA, MdSnackBar, MdSnackBarConfig} from '@angular/material';
-import {DomSanitizer} from '@angular/platform-browser';
+import {DomSanitizer, DOCUMENT} from '@angular/platform-browser';
 import { FacebookService, InitParams, LoginResponse, UIParams, LoginOptions, LoginStatus } from 'ngx-facebook';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import 'rxjs/add/operator/takeUntil';
@@ -70,50 +70,41 @@ export class AppComponent implements OnInit, OnDestroy{
   private dialog: MdDialog, private fb: FacebookService,
   private authService:AuthService, public snackbar: MdSnackBar,
   private guestService: GuestService, private router: Router,  
-  private route: ActivatedRoute, media: ObservableMedia) {
-    console.log('before queryparams..')
-    this.route.queryParams.forEach((params: Params) => {
-      console.log(params)
-    })
-    console.log('after queryparams..')
-    console.log('before params..')
-    this.route.params.forEach((params: Params) => {
-      console.log(params)
-    })
-    console.log('after params..')
-    // To avoid XSS attacks, the URL needs to be trusted from inside of your application.
-    const iconsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('../assets/images/icons.svg');
-    console.log(iconsSafeUrl)
-    
-    this.iconRegistry.addSvgIconSetInNamespace('icons', iconsSafeUrl);
-    this.watcher = media.subscribe((change: MediaChange) => {
-      this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : "";
-      if ( change.mqAlias === 'sm' || change.mqAlias === 'xs') {
-         this.loadMobileContent();
-      } else {
-         this.loadDesktopContent();
-      }
-    });
-    let initParams: InitParams = {
-      appId: '2028039097221584',
-      xfbml: true,
-      version: 'v2.9'
-    };
+  private route: ActivatedRoute, media: ObservableMedia, @Inject(DOCUMENT) private document: any) {
+    console.log(this.document.location.href);
+    console.log(this.document.location.href.indexOf('/reset/'))
 
-    this.fb.init(initParams)
-    .then (() => {
-      this.getLoginStatus()
-    })
+    let resetUrl = this.document.location.href;
+
+    if (resetUrl.indexOf('/reset/')) {
+      this.router.navigate([resetUrl.substring(resetUrl.indexOf('/reset/'))])
+    } else {
+      const iconsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('../assets/images/icons.svg');
+      console.log(iconsSafeUrl)
+      
+      this.iconRegistry.addSvgIconSetInNamespace('icons', iconsSafeUrl);
+      this.watcher = media.subscribe((change: MediaChange) => {
+        this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : "";
+        if ( change.mqAlias === 'sm' || change.mqAlias === 'xs') {
+          this.loadMobileContent();
+        } else {
+          this.loadDesktopContent();
+        }
+      });
+      let initParams: InitParams = {
+        appId: '2028039097221584',
+        xfbml: true,
+        version: 'v2.9'
+      };
+
+      this.fb.init(initParams)
+      .then (() => {
+        if (resetUrl != undefined && resetUrl != null) this.getLoginStatus()
+      })
+    }
   }
 
   ngOnInit(){
-    console.log('before queryparams..')
-    this.route.queryParams.forEach((params: Params) => {
-      console.log(params)
-    })
-    console.log('after queryparams..')
-        // if (params['token'] !== undefined) {
-        //   let token = params['token']
     this.showGuest = false;
     this.snackbarConfig = new MdSnackBarConfig();
     this.snackbarConfig.duration = 5000;
