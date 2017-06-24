@@ -97,9 +97,11 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit(){
-    this.route.params.forEach((params: Params) => {
+    console.log('before queryparams..')
+    this.route.queryParams.forEach((params: Params) => {
       console.log(params)
     })
+    console.log('after queryparams..')
         // if (params['token'] !== undefined) {
         //   let token = params['token']
     this.showGuest = false;

@@ -12,5 +12,6 @@ export class WeddingComponent implements OnInit {
 
   ngOnInit() {
     this.titleService.setTitle('Amanda & Luke\'s Wedding');
+    console.log('wedding loads..')
   }
 }
