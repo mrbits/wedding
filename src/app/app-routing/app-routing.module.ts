@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+import { AppComponent } from '../app.component';
 import { WeddingComponent } from '../wedding/wedding.component';
 import { InviteComponent } from '../invite/invite.component';
 import { RegistryComponent } from '../registry/registry.component';
@@ -42,6 +43,10 @@ const routes: Routes = [
   {
     path: 'reset/:token',
     component: ResetPasswordComponent
+  },
+  {
+    path: '', 
+    component: AppComponent 
   }
 ];
 
