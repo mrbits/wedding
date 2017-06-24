@@ -76,33 +76,33 @@ export class AppComponent implements OnInit, OnDestroy{
 
     let resetUrl = this.document.location.href;
 
-    if (resetUrl.indexOf('/reset/')) {
+    if (resetUrl.indexOf('/reset/') && resetUrl.indexOf('/reset/') < resetUrl.length) {
       this.router.navigate([resetUrl.substring(resetUrl.indexOf('/reset/'))])
-    } else {
-      const iconsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('../assets/images/icons.svg');
-      console.log(iconsSafeUrl)
-      
-      this.iconRegistry.addSvgIconSetInNamespace('icons', iconsSafeUrl);
-      this.watcher = media.subscribe((change: MediaChange) => {
-        this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : "";
-        if ( change.mqAlias === 'sm' || change.mqAlias === 'xs') {
-          this.loadMobileContent();
-        } else {
-          this.loadDesktopContent();
-        }
-      });
-      let initParams: InitParams = {
-        appId: '2028039097221584',
-        xfbml: true,
-        version: 'v2.9'
-      };
-
-      this.fb.init(initParams)
-      .then (() => {
-        if (resetUrl != undefined && resetUrl != null) this.getLoginStatus()
-      })
     }
+    const iconsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('../assets/images/icons.svg');
+    console.log(iconsSafeUrl)
+    
+    this.iconRegistry.addSvgIconSetInNamespace('icons', iconsSafeUrl);
+    this.watcher = media.subscribe((change: MediaChange) => {
+      this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : "";
+      if ( change.mqAlias === 'sm' || change.mqAlias === 'xs') {
+        this.loadMobileContent();
+      } else {
+        this.loadDesktopContent();
+      }
+    });
+    let initParams: InitParams = {
+      appId: '2028039097221584',
+      xfbml: true,
+      version: 'v2.9'
+    };
+
+    this.fb.init(initParams)
+    .then (() => {
+      if (resetUrl != undefined && resetUrl != null) this.getLoginStatus()
+    })
   }
+  
 
   ngOnInit(){
     this.showGuest = false;
