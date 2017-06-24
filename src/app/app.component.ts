@@ -71,6 +71,11 @@ export class AppComponent implements OnInit, OnDestroy{
   private authService:AuthService, public snackbar: MdSnackBar,
   private guestService: GuestService, private router: Router,  
   private route: ActivatedRoute, media: ObservableMedia) {
+    console.log('before queryparams..')
+    this.route.queryParams.forEach((params: Params) => {
+      console.log(params)
+    })
+    console.log('after queryparams..')
     // To avoid XSS attacks, the URL needs to be trusted from inside of your application.
     const iconsSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('../assets/images/icons.svg');
     console.log(iconsSafeUrl)

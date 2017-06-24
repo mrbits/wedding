@@ -61,13 +61,21 @@ app.all('*', ensureSecure);
 //http.createServer(app).listen(3000);
 var appSecure = https.createServer(httpsOptions, app).listen(8443);
 
-app.get('/reset/:token', function (req, res) {
-  const token = req.params.token;
-  // res.render('reset/' + token);
-  console.log('reset..', token)
+const token = undefined;
+
+app.get('/reset', function (req, res) {
+  token = req.params.token;
+  console.log('reset token..', token);
   console.log(__dirname + '/dist/index.html?reset=' + token)
-  res.redirect(__dirname + '/dist/index.html?reset=' + token)
+  res.sendFile(__dirname + '/dist/index.html')
 });
+
+if (token != undefined && token != null) {
+  console.log('token..', token)
+  res.redirect('/reset?token=' + token)
+  token = undefined
+}
+
 
 app.get('*',function(req,res){
     res.sendFile(__dirname + '/dist/index.html');
