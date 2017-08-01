@@ -7,6 +7,7 @@ const Guest = require('../models/guest')
 const async = require('async')
 const crypto = require('crypto')
 const nodemailer = require('nodemailer')
+const json2csv = require('json2csv')
 
 const privateFields = [
     "_id",
@@ -497,5 +498,17 @@ function getPublicData(guest){
   }) 
   return guest
 }
+
+router.get('/guest-status', (req, res, next) => {
+  Guest.find({}).toArray(function (err, docs) {
+    console.log('error', err)
+    console.log('docs', docs)
+    var fields = ['firstName', 'lastName', 'invite', 'inviteDate', 'rsvp', 'rsvpDate', 'mealOption', 'mealOptionDate', 'requestedSong', 'visitCount', 'facebookId', 'partyLeaderFirstName', 'partyLeaderLastName', 'address', 'phone', 'email'];
+    var fieldNames = ['First Name', 'Last Name', 'Opened Invite', 'Date Invite Opened', 'RSVP', 'Date RSVP', 'Meal', 'Date Meal Selected', 'requestedSong', 'visitCount', 'facebookId', 'Party Leader First Name', 'Party Leader Last Name', 'Address', 'Phone', 'Email'];
+    var data = json2csv({ data: docs, fields: fields, fieldNames: fieldNames });
+    res.attachment('bearpoo-guests.csv');
+    res.status(200).send(data);
+  })
+})
 
 module.exports = router
