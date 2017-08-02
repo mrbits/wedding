@@ -9,11 +9,11 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 
-const httpsOptions = {
-  ca: fs.readFileSync('/etc/ssl/certs/lukeandamanda_life.ca-bundle'),
-  key: fs.readFileSync('/etc/ssl/private/lukeandamanda_life.key'),
-  cert: fs.readFileSync('/etc/ssl/certs/lukeandamanda_life.crt')
-};
+// const httpsOptions = {
+//   ca: fs.readFileSync('/etc/ssl/certs/lukeandamanda_life.ca-bundle'),
+//   key: fs.readFileSync('/etc/ssl/private/lukeandamanda_life.key'),
+//   cert: fs.readFileSync('/etc/ssl/certs/lukeandamanda_life.crt')
+// };
 
 // Connect To Database
 mongoose.connect(config.database);
@@ -59,13 +59,13 @@ app.listen(port, () => {
 app.all('*', ensureSecure);
 
 //http.createServer(app).listen(3000);
-var appSecure = https.createServer(httpsOptions, app).listen(8443);
+// var appSecure = https.createServer(httpsOptions, app).listen(8443);
 
 app.get('*',function(req,res){
     res.sendFile(__dirname + '/dist/index.html');
 });
 
-appSecure.listen(8443);
+// appSecure.listen(8443);
 
 function ensureSecure(req, res, next){
   if(req.secure){

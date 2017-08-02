@@ -499,8 +499,9 @@ function getPublicData(guest){
   return guest
 }
 
-router.get('/guest-status', (req, res, next) => {
-  Guest.find({}).toArray(function (err, docs) {
+router.get('/get-list-status', (req, res, next) => {
+  console.log('get-list-status..')
+  Guest.find({}, function (err, docs) {
     console.log('error', err)
     console.log('docs', docs)
     var fields = ['firstName', 'lastName', 'invite', 'inviteDate', 'rsvp', 'rsvpDate', 'mealOption', 'mealOptionDate', 'requestedSong', 'visitCount', 'facebookId', 'partyLeaderFirstName', 'partyLeaderLastName', 'address', 'phone', 'email'];
